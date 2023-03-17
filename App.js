@@ -1,16 +1,9 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {Text, View} from 'react-native';
+import Login from './screens/Login'
 
-const App = () => {
+export default function App() {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Hello World</Text>
-      <Text>Hello World</Text>
-      <Text>Hello World</Text>
-      <Text>Hello World</Text>
-    </View>
+    <Login />
   );
 };
-
-export default App;
