@@ -10,7 +10,7 @@ export default function Login() {
       <View style={{alignContent:'center', justifyContent:'center'}}>
         <AuthHeader title={'Hurricane Help'}/>
         <TInput placer={'Email/Username'} />
-        <TInput placer={'Password'} />
+        <TInput placer={'Password'} /> 
         <Buttons title={'Login'} />
       </View>
     );
