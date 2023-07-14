@@ -11,7 +11,7 @@ export default function Login() {
         <AuthHeader title={'Hurricane Help'}/>
         <TInput placer={'Email/Username'} />
         <TInput placer={'Password'} /> 
-        <Buttons title={'Login'} />
+        <Buttons title={'Login.'} />
       </View>
     );
 }
