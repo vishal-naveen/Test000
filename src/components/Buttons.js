@@ -1,19 +1,24 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
+import {constants} from "../constants"
 
 export default function Buttons(props){
-    const{title} = props
+    const{title, onPress, color , textC, fontS, borderRa, height} = props
     return (
       <TouchableOpacity
+        onPress={onPress}
         style={{
           width: '75%',
-          backgroundColor: 'rgb(230,105,110)',
-          paddingVertical: 20,
+          height:height,
+          backgroundColor: color,
           alignItems: 'center',
           justifyContent: 'center',
+          paddingVertical:10,
+          borderRadius:borderRa,
+
         }}>
-        <Text style={{fontSize: 15, color: 'gray', top: 15, left: 0}}>
+        <Text style={{fontSize: fontS, color:textC}}>
           {title}
         </Text>
       </TouchableOpacity>
