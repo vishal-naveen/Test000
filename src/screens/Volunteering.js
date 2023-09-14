@@ -1,17 +1,21 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import Buttons from '../components/Buttons'
-import { Text, View, KeyboardAvoidingView, ScrollView, Image, Alert } from 'react-native'
+import { Text, View, KeyboardAvoidingView, ScrollView, Image, Alert, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import TInput from '../components/TInput';
 import AuthHeader from '../components/AuthHeader';
-import PasswordIn from '../components/PasswordIn'
+import PasswordIn from '../components/PasswordIn';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Volunteering({navigation}) {
-
+export default function Volunteering({}) {
+  const navigation = useNavigation();
 
     return (
       <KeyboardAvoidingView style={{backgroundColor:'#09172d'}}>
+        <TouchableOpacity style={{position:'absolute', top:0, left:0, width:40, zIndex:10}} >
+          <Buttons fontS={25} height={50} color='#09172d' textC='white' title={'<'} onPress={()=>navigation.goBack()}/>
+        </TouchableOpacity>
         <View style={{alignItems:'center', justifyContent:'center', height:"100%"}}>
           <View style={{alignItems:'center', bottom:145}}>
             <AuthHeader color='#dfd1b8' title={'Volunteer'}/>

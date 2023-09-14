@@ -7,8 +7,11 @@ import TInput from '../components/TInput';
 import AuthHeader from '../components/AuthHeader';
 import PasswordIn from '../components/PasswordIn'
 
-export default function Homeh({navigation}) {
+import { useNavigation } from '@react-navigation/native';
 
+export default function Homeh({}) {
+
+  const navigation = useNavigation();
 
     return (
       <KeyboardAvoidingView style={{backgroundColor:'#09172d'}}>
