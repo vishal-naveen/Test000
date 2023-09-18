@@ -4,10 +4,11 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import {constants} from "../constants"
 
 export default function Buttons(props){
-    const{title, onPress, color , textC, fontS, borderRa, height} = props
+    const{title, onPress, color , textC, fontS, borderRa, height, onPressIn} = props
     return (
       <TouchableOpacity
         onPress={onPress}
+        onPressIn={onPressIn}
         style={{
           width: '75%',
           height:height,
@@ -16,6 +17,7 @@ export default function Buttons(props){
           justifyContent: 'center',
           paddingVertical:10,
           borderRadius:borderRa,
+          
 
         }}>
         <Text style={{fontSize: fontS, color:textC}}>

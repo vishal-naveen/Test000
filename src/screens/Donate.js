@@ -6,36 +6,59 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import TInput from '../components/TInput';
 import AuthHeader from '../components/AuthHeader';
 import PasswordIn from '../components/PasswordIn'
-import { DateTimePicker } from '@react-native-community/datetimepicker';
+import  DateTimePicker from '@react-native-community/datetimepicker';
 
+import { firebase } from '@react-native-firebase/database';
+
+const database = firebase
+  .app()
+  .database('https://hurricane-help-default-rtdb.firebaseio.com/')
 
 
 
 export default function Donate({navigation}) {
+  
+
+
+   
     const [date, setDate] = useState(new Date())
     const [show, setShow] = useState(false)
     const [mode, setMode] = useState("date")
     const [text, setText] = useState('Empty')
 
-    const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate || date
-      setShow(Platform.OS === 'ios')
-      setDate(currentDate)
-
-      let tempDate = new Date(currentDate)
-      let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear()
-      let fTime = 'Hours: ' + tempDate.getHours() + ' | Minutes: ' + tempDate.getMinutes();
-      setText(fDate + '\n' + fTime)
-
-      console.log(fDate + ' (' + fTime + ')')
-    }
 
     const showMode = (currentmode) => {
       setShow(true)
       setMode(currentmode)
     }
 
+    const showDatepicker = () => {
+      showMode('date');
+    };
   
+    const showTimepicker = () => {
+      showMode('time');
+    };
+
+    const onChangei = (event, selectedDate) => {
+      const currentDate = selectedDate;
+      setShow(false);
+      setDate(currentDate);
+    };
+
+    function finishp () {
+      
+      
+        database.ref("/HurricaneDatabase/Donater").set({
+          pickupD: date.toLocaleDateString(),
+          pickupT: date.toLocaleTimeString(),
+        })
+        .then(() => console.log('Data set.' + date.toLocaleDateString() + date.toLocaleTimeString()));
+        
+      
+    }
+
+
     return (
       <KeyboardAvoidingView style={{backgroundColor:'#09172d'}}>
         <View style={{alignItems:'center', justifyContent:'center', height:"100%"}}>
@@ -51,17 +74,17 @@ export default function Donate({navigation}) {
           <View style={{right:40, bottom:60}}>
             <Text style={{color:'white', fontSize:17}}>Items: Scan</Text>
 
-            <Text style={{color:'white', fontSize:17}}>Pick-up Date: </Text>
-            <Text style={{color:'white', fontSize:17}}>Pick-up Time: </Text>
+            <Text style={{color:'white', fontSize:17}} onPress={showDatepicker}>Pick-up Date: </Text>
+            <Text style={{color:'white', fontSize:17}} onPress={showTimepicker}>Pick-up Time: </Text>
             <Text style={{color:'white', fontSize:17}}>Location Of Pickup: </Text>
+            <Text style={{color:'white'}}>selected: {date.toLocaleDateString()}</Text>
           </View>
           <View style={{width:'60%', flexDirection:'row', right:57, top:20}}>
             <View style={{right:10, width:'100%'}}>
-                <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('DonationFinish')} title={'Finish'} />
-                
+                <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('DonationFinish')} onPressIn={finishp()} title={'Finish'} />
             </View>
             <View style={{right:50, width:'100%'}}>
-            <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Homeh')} title={'Cancel'} />
+            <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={() => showMode('time')} title={'Cancel'} />
             </View>
             <View>
               
@@ -77,13 +100,9 @@ export default function Donate({navigation}) {
               value={date}
               mode={mode}
               is24Hour={true}
-              display='default'
-              onChange={onChange}
+              onChange={onChangei}
               />
             )}
-            <View>
-              <Button title ='TimePicker' onPress={() => showMode('time')}/>
-            </View>
         </View>
           </View>
         </View>
