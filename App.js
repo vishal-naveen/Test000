@@ -15,28 +15,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { Header } from '@react-navigation/stack';
 
-import { firebase } from '@react-native-firebase/database';
-
-const database = firebase
-  .app()
-  .database('https://hurricane-help-default-rtdb.firebaseio.com/')
 
 const Stack = createNativeStackNavigator();
 
 // https://hurricane-help-default-rtdb.firebaseio.com
 
 export default function App() {
-  useEffect(() => {
-    database.ref("/HurricaneDatabase/Donater").set({
-      name: 'Vishal N',
-      age: 15,
-    })
-    .then(() => console.log('Data set.'));
-  
-    return () => {
-      
-    }
-  }, [])
   
   return (
     <NavigationContainer>
