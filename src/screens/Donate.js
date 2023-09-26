@@ -1,12 +1,15 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import Buttons from '../components/Buttons'
-import { Text, View, KeyboardAvoidingView, ScrollView, Image, Alert, Button } from 'react-native'
+import { Text, View, KeyboardAvoidingView, ScrollView, Image, Alert, Button, PermissionsAndroid, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import TInput from '../components/TInput';
 import AuthHeader from '../components/AuthHeader';
 import PasswordIn from '../components/PasswordIn'
 import  DateTimePicker from '@react-native-community/datetimepicker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { firebase } from '@react-native-firebase/database';
 
@@ -19,13 +22,36 @@ const database = firebase
 export default function Donate({navigation}) {
   
 
-
+    const [cameraPhoto, setCameraPhoto] = useState()
    
     const [date, setDate] = useState(new Date())
     const [show, setShow] = useState(false)
     const [mode, setMode] = useState("date")
     const [text, setText] = useState('Empty')
 
+    const [name, setName] = useState('')
+
+    useEffect(() => {
+      getMyStringValue().then((text)=>{
+        if (text?.length>0){
+          setName(text)
+        }
+      })
+    
+      return () => {
+        
+      }
+    }, [])
+
+    const getMyStringValue = async () => {
+      try {
+        return await AsyncStorage.getItem('name')
+      } catch(e) {
+        // read error
+      }
+    
+      console.log('Done.')
+    }
 
     const showMode = (currentmode) => {
       setShow(true)
@@ -46,10 +72,28 @@ export default function Donate({navigation}) {
       setDate(currentDate);
     };
 
+    let camOptions = {
+      saveToPhotos: true,
+      mediaType: 'photo',
+    }
+
+    const openCamera = async () => {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED){
+        const result = await launchCamera(camOptions)
+        setCameraPhoto(result.assets[0].uri)
+        console.log(result)
+      }
+    }
+
+    
+
     function finishp () {
+        setStringValue(name)
       
-      
-        database.ref("/HurricaneDatabase/Donater").set({
+        database.ref("/HurricaneDatabase/Donater/"+name).set({
           pickupD: date.toLocaleDateString(),
           pickupT: date.toLocaleTimeString(),
         })
@@ -58,52 +102,146 @@ export default function Donate({navigation}) {
       
     }
 
+    const setStringValue = async (value) => {
+      try {
+        AsyncStorage.setItem('name', value)
+      } catch(e) {
+        // save error
+      }
+    
+      console.log('Done.')
+    }
 
     return (
-      <KeyboardAvoidingView style={{backgroundColor:'#09172d'}}>
-        <View style={{alignItems:'center', justifyContent:'center', height:"100%"}}>
-
-          <View style={{alignItems:'center', bottom:145}}>
-            <AuthHeader color='#dfd1b8' title={'Donatea'}/> 
-            <Text style={{color:'white'}}>Thank You For Donating!</Text>
+      <KeyboardAvoidingView style={{backgroundColor: '#09172d'}}>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+          }}>
+          <View style={{alignItems: 'center', bottom: 145}}>
+            <AuthHeader color="#dfd1b8" title={'Donatea'} />
+            <Text style={{color: 'white'}}>Thank You For Donating!</Text>
           </View>
-          <View style={{width:'90%', bottom:100, alignItems:'center'}}>
-            <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Name'} />
-            <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Phone Number/Email'} />
+          <View style={{width: '90%', bottom: 100, alignItems: 'center'}}>
+            <TInput
+              color="#dfd1b8"
+              onChangeText={text => {
+                setName(text);
+                // setStringValue(text)
+              }}
+              placer={'Name'}
+              value = {name}
+            />
+            <TInput
+              color="#dfd1b8"
+              onChangeText={text => {
+                console.log(text);
+              }}
+              placer={'Phone Number/Email'}
+            />
           </View>
-          <View style={{right:40, bottom:60}}>
-            <Text style={{color:'white', fontSize:17}}>Items: Scan</Text>
-
-            <Text style={{color:'white', fontSize:17}} onPress={showDatepicker}>Pick-up Date: </Text>
-            <Text style={{color:'white', fontSize:17}} onPress={showTimepicker}>Pick-up Time: </Text>
-            <Text style={{color:'white', fontSize:17}}>Location Of Pickup: </Text>
-            <Text style={{color:'white'}}>selected: {date.toLocaleDateString()}</Text>
-          </View>
-          <View style={{width:'60%', flexDirection:'row', right:57, top:20}}>
-            <View style={{right:10, width:'100%'}}>
-                <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('DonationFinish')} onPressIn={finishp()} title={'Finish'} />
-            </View>
-            <View style={{right:50, width:'100%'}}>
-            <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={() => showMode('time')} title={'Cancel'} />
-            </View>
-            <View>
-              
-            </View>
-        <View style={{width:300, alignItems:'center', top:180}}>
-            <Text style={{right:450, color:'white'}}>By clicking Finish you are agreeing to our </Text>
-            <View style={{right:450}}>
-                <Buttons height={51} fontS={15} borderRa={8} color='#09172d' textC='#7e90ac' onPress={()=>navigation.navigate('Homeh')} title={'Terms And Conditions.'} />
-            </View>
-            {show && (
-              <DateTimePicker
-              testID='dateTimePicker'
-              value={date}
-              mode={mode}
-              is24Hour={true}
-              onChange={onChangei}
-              />
+          <View style={{right: 40, bottom: 60}}>
+            <Text style={{color: 'white', fontSize: 17}} onPress={() => navigation.navigate('DonateCamera')}>Items: Scan</Text>
+            <Buttons
+              height={51}
+              fontS={15}
+              borderRa={8}
+              color="black"
+              textC="#dfd1b8"
+              onPress={openCamera}
+              title={'Camera'}
+            />
+            {cameraPhoto?.length > 0 && (
+              <TouchableOpacity>
+                <Image
+                  style={{height: 200, width: 200, backgroundColor: 'white'}}
+                  source={{uri: cameraPhoto}}
+                />
+              </TouchableOpacity>
             )}
-        </View>
+            <Text
+              style={{color: 'white', fontSize: 17}}
+              onPress={showDatepicker}>
+              Pick-up Date:{' '}
+            </Text>
+            <Text
+              style={{color: 'white', fontSize: 17}}
+              onPress={showTimepicker}>
+              Pick-up Time:{' '}
+            </Text>
+            <Text style={{color: 'white', fontSize: 17}}>
+              Location Of Pickup:{' '}
+            </Text>
+            {/* <View style={{height: 600, width: '100%', backgroundColor: 'red'}}>
+              <GooglePlacesAutocomplete
+                placeholder="Search"
+                onPress={(data, details = null) => {
+                  // 'details' is provided when fetchDetails = true
+                  console.log(data, details);
+                }}
+                query={{
+                  key: 'AIzaSyDyqDQyayPKhjQPuvwuDAcOkzF8rS5cw28',
+                  language: 'en',
+                }}
+              />
+            </View> */}
+            <Text style={{color: 'white'}}>
+              selected: {date.toLocaleDateString()}
+            </Text>
+          </View>
+          <View
+            style={{width: '60%', flexDirection: 'row', right: 57, top: 20}}>
+            <View style={{right: 10, width: '100%'}}>
+              <Buttons
+                height={51}
+                fontS={15}
+                borderRa={8}
+                color="black"
+                textC="#dfd1b8"
+                onPress={() => navigation.navigate('DonationFinish')}
+                onPressIn={() => finishp()}
+                title={'Finish'}
+              />
+            </View>
+            <View style={{right: 50, width: '100%'}}>
+              <Buttons
+                height={51}
+                fontS={15}
+                borderRa={8}
+                color="black"
+                textC="#dfd1b8"
+                onPress={() => navigation.navigate('Homeh')}
+                title={'Cancel'}
+              />
+            </View>
+            <View></View>
+            <View style={{width: 300, alignItems: 'center', top: 180}}>
+              <Text style={{right: 450, color: 'white'}}>
+                By clicking Finish you are agreeing to our{' '}
+              </Text>
+              <View style={{right: 450}}>
+                <Buttons
+                  height={51}
+                  fontS={15}
+                  borderRa={8}
+                  color="#09172d"
+                  textC="#7e90ac"
+                  onPress={() => navigation.navigate('Homeh')}
+                  title={'Terms And Conditions.'}
+                />
+              </View>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  onChange={onChangei}
+                />
+              )}
+            </View>
           </View>
         </View>
       </KeyboardAvoidingView>

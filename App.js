@@ -9,6 +9,7 @@ import Homeh from './src/screens/Homeh'
 import Volunteering from './src/screens/Volunteering';
 import Donate from './src/screens/Donate';
 import DonationFinish from './src/screens/DonationFinish';
+import DonateCamera from './src/screens/DonateCamera';
 import { useEffect } from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -39,6 +40,7 @@ export default function App() {
         <Stack.Screen name="Volunteering" component={Volunteering}/>
         <Stack.Screen name="Donate" component={Donate}/>
         <Stack.Screen name="DonationFinish" component={DonationFinish}/>
+        <Stack.Screen name="DonateCamera" component={DonateCamera}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -3,7 +3,7 @@ import React from 'react';
 import {View, TextInput, Text} from 'react-native'
 
 export default function TInput(props) {
-    const {placer, onChangeText, color} = props
+    const {placer, onChangeText, color, ...restProps} = props
      return (
        <View
          style={{
@@ -13,7 +13,7 @@ export default function TInput(props) {
            marginBottom: 20,
            borderRadius:10,
          }}>
-         <TextInput textAlign='left' placeholderTextColor={color} color={color} onChangeText={onChangeText} placeholder={placer} />
+         <TextInput textAlign='left' placeholderTextColor={color} color={color} onChangeText={onChangeText} placeholder={placer} {...restProps} />
        </View>
      );
 }
