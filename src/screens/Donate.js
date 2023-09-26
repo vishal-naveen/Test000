@@ -12,6 +12,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { firebase } from '@react-native-firebase/database';
+import { formatPhoneNumberIntl } from 'react-phone-number-input';
 
 const database = firebase
   .app()
@@ -30,6 +31,7 @@ export default function Donate({navigation}) {
     const [text, setText] = useState('Empty')
 
     const [name, setName] = useState('')
+    const [number, setNumber] = useState('')
 
     useEffect(() => {
       getMyStringValue().then((text)=>{
@@ -92,8 +94,9 @@ export default function Donate({navigation}) {
 
     function finishp () {
         setStringValue(name)
+        setStringValue(number)
       
-        database.ref("/HurricaneDatabase/Donater/"+name).set({
+        database.ref("/HurricaneDatabase/Donater/"+name+number).set({
           pickupD: date.toLocaleDateString(),
           pickupT: date.toLocaleTimeString(),
         })
@@ -132,19 +135,23 @@ export default function Donate({navigation}) {
                 // setStringValue(text)
               }}
               placer={'Name'}
-              value = {name}
+              value={name}
             />
             <TInput
               color="#dfd1b8"
               onChangeText={text => {
-                console.log(text);
+                setNumber(text);
               }}
-              placer={'Phone Number/Email'}
+              placer={'Phone Number'}
             />
           </View>
           <View style={{right: 40, bottom: 60}}>
-            <Text style={{color: 'white', fontSize: 17}} onPress={() => navigation.navigate('DonateCamera')}>Items: Scan</Text>
-            <Buttons
+            <Text
+              style={{color: 'white', fontSize: 17}}
+              onPress={() => navigation.navigate('DonateCamera')}>
+              Items: Scan
+            </Text>
+            {/* <Buttons
               height={51}
               fontS={15}
               borderRa={8}
@@ -160,36 +167,38 @@ export default function Donate({navigation}) {
                   source={{uri: cameraPhoto}}
                 />
               </TouchableOpacity>
-            )}
-            <Text
-              style={{color: 'white', fontSize: 17}}
-              onPress={showDatepicker}>
-              Pick-up Date:{' '}
-            </Text>
-            <Text
-              style={{color: 'white', fontSize: 17}}
-              onPress={showTimepicker}>
-              Pick-up Time:{' '}
-            </Text>
-            <Text style={{color: 'white', fontSize: 17}}>
-              Location Of Pickup:{' '}
-            </Text>
-            {/* <View style={{height: 600, width: '100%', backgroundColor: 'red'}}>
-              <GooglePlacesAutocomplete
-                placeholder="Search"
-                onPress={(data, details = null) => {
-                  // 'details' is provided when fetchDetails = true
-                  console.log(data, details);
-                }}
-                query={{
-                  key: 'AIzaSyDyqDQyayPKhjQPuvwuDAcOkzF8rS5cw28',
-                  language: 'en',
-                }}
-              />
-            </View> */}
-            <Text style={{color: 'white'}}>
-              selected: {date.toLocaleDateString()}
-            </Text>
+            )} */}
+            <View style={{flexDirection: 'row'}}>
+              <Text
+                style={{color: 'white', fontSize: 17}}
+                onPress={showDatepicker}>
+                Pick-up Date:{' '}
+              </Text>
+              <Text style={{color: 'white'}}>{date.toLocaleDateString()}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Text
+                style={{color: 'white', fontSize: 17}}
+                onPress={showTimepicker}>
+                Pick-up Time:{' '}
+              </Text>
+              <Text style={{color: 'white'}}>{date.toLocaleTimeString()}</Text>
+            </View>
+            <View>
+              <View style={{height: 100, width: 300}}>
+                <GooglePlacesAutocomplete
+                  placeholder="Location Of Pickup"
+                  onPress={(data, details = null) => {
+                    // 'details' is provided when fetchDetails = true
+                    console.log(data, details);
+                  }}
+                  query={{
+                    key: 'AIzaSyDyqDQyayPKhjQPuvwuDAcOkzF8rS5cw28',
+                    language: 'en',
+                  }}
+                />
+              </View>
+            </View>
           </View>
           <View
             style={{width: '60%', flexDirection: 'row', right: 57, top: 20}}>
