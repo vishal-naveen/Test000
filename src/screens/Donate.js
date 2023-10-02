@@ -94,7 +94,7 @@ export default function Donate({navigation}) {
 
     function finishp () {
         setStringValue(name)
-        setStringValue(number)
+        //setStringValue(number)
       
         database.ref("/HurricaneDatabase/Donater/"+name+number).set({
           pickupD: date.toLocaleDateString(),
@@ -124,7 +124,7 @@ export default function Donate({navigation}) {
             height: '100%',
           }}>
           <View style={{alignItems: 'center', bottom: 145}}>
-            <AuthHeader color="#dfd1b8" title={'Donatea'} />
+            <AuthHeader color="#dfd1b8" title={'Donate'} />
             <Text style={{color: 'white'}}>Thank You For Donating!</Text>
           </View>
           <View style={{width: '90%', bottom: 100, alignItems: 'center'}}>
@@ -196,6 +196,12 @@ export default function Donate({navigation}) {
                     key: 'AIzaSyDyqDQyayPKhjQPuvwuDAcOkzF8rS5cw28',
                     language: 'en',
                   }}
+                  listHoverColor="#09172d"
+                  backgroundColor="#09172d"
+                  textInputProps={{
+                    backgroundColor:"white"
+                  }}
+              
                 />
               </View>
             </View>

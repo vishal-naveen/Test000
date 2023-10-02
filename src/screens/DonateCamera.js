@@ -11,6 +11,8 @@ import {
   Button,
   PermissionsAndroid,
   TouchableOpacity,
+  ViewBase,
+  Platform,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import TInput from '../components/TInput';
@@ -22,7 +24,10 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {firebase} from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
+const dbStorage = 
+  storage().ref('gs://hurricane-help.appspot.com');
 const database = firebase
   .app()
   .database('https://hurricane-help-default-rtdb.firebaseio.com/');
@@ -37,7 +42,6 @@ export default function DonateCamera({navigation}) {
 
   const [name, setName] = useState('');
 
-
   const [camera1photo, setcamera1photo] = useState(false);
   const [camera2, setcamera2] = useState(false);
   const [camera2photo, setcamera2photo] = useState(false);
@@ -48,6 +52,7 @@ export default function DonateCamera({navigation}) {
     getMyStringValue().then(text => {
       if (text?.length > 0) {
         setName(text);
+        console.log('Username ==>>',text)
       }
     });
 
@@ -86,6 +91,8 @@ export default function DonateCamera({navigation}) {
   let camOptions = {
     saveToPhotos: true,
     mediaType: 'photo',
+    maxWidth: 250,
+    maxHeight: 250,
   };
 
   const openCamera1 = async () => {
@@ -105,7 +112,7 @@ export default function DonateCamera({navigation}) {
       setcamera2(true);
     }, 3000);
     const timeout1 = setTimeout(() => {
-        setcamera1photo(true);
+      setcamera1photo(true);
     }, 2000);
   };
 
@@ -126,7 +133,7 @@ export default function DonateCamera({navigation}) {
       setcamera3(true);
     }, 3000);
     const timeout1 = setTimeout(() => {
-        setcamera2photo(true);
+      setcamera2photo(true);
     }, 2000);
   };
 
@@ -144,7 +151,7 @@ export default function DonateCamera({navigation}) {
 
   const openCamera3img = () => {
     const timeout = setTimeout(() => {
-        setcamera3photo(true);
+      setcamera3photo(true);
     }, 2000);
   };
 
@@ -174,31 +181,84 @@ export default function DonateCamera({navigation}) {
     console.log('Done.');
   };
 
+  const upload = async () => {
+    //cameraPhoto
+    const filename = cameraPhoto.substring(cameraPhoto.lastIndexOf('/') + 1);
+    const uploadUri =
+      Platform.OS === 'ios' ? cameraPhoto.replace('file://', '') : cameraPhoto;
+    const metaData = {contentType: 'image/jpeg'};
+    const task = dbStorage.putFile(uploadUri, metaData);
+
+    task.on('state_changed', taskSnapshot => {
+      console.log(
+        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
+      );
+    });
+
+    task.then(() => {
+      console.log('Image uploaded to the bucket!');
+    //   const data = {
+    //     filename: filename,
+    //     photo: res.downloadURL, // retrieve image URL
+    //   };
+    //    database
+    // .ref('/HurricaneDatabase/Donater/' + name)
+    // .set(
+    //   data
+    // )
+    // .then(() =>
+    //   {
+      alert('file 1 is saved successfully')
+    // }
+    // );
+    });
+    // const res = await dbStorage
+    //   .putFile(uploadUri, metaData); // put image file to GCS
+    // return res;
+  };
+  // const userId = firebase.auth().currentUser.uid;
+  // const res = await upload(`absolute/path/to/image.JPG`, `image.JPG`, `image/jpeg`); // function in step 1
+  // const data = {
+  //     name: 'User Name'
+  //     photo: res.downloadURL, // retrieve image URL
+  // };
+  // firebase.database().ref('users/' + userId).set(data);
+  // const filename = uri.substring(uri.lastIndexOf('/') + 1);
+  //   const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+  //   setUploading(true);
+  //   setTransferred(0);
+  //   const task = storage()
+  //     .ref(filename)
+  //     .putFile(uploadUri);
+
   return (
-    <KeyboardAvoidingView style={{backgroundColor: '#09172d'}}>
-      {/* <ScrollView style={{height:'100%', width:'100%'}}>  */}
+    <View style={{flex: 1, backgroundColor: '#09172d'}}>
+      <ScrollView contentContainerStyle={{paddingBottom: 90}}>
         <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-        }}>
-        <View style={{alignItems: 'center', bottom: 265}}>
-          <AuthHeader color="#dfd1b8" title={'Donator Images'} />
-          <Text style={{color: 'white'}}>Thank You For Donating!</Text>
-        </View>
-        <View style={{left: 30, bottom: 200}}>
-          <View style={{width: 200, bottom: 35, right: 100}}>
-            <Buttons
-              height={51}
-              fontS={15}
-              borderRa={8}
-              color="black"
-              textC="#dfd1b8"
-              onPress={openCamera1}
-              title={'Camera 1'}
-            />
+          style={{
+            height: '100%',
+            paddingHorizontal: 10,
+          }}>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              marginBottom: 10,
+            }}>
+            <AuthHeader color="#dfd1b8" title={'Donator Images'} />
+            <Text style={{color: 'white'}}>Thank You For Donating!</Text>
           </View>
+          <Buttons
+            height={51}
+            width={150}
+            fontS={15}
+            borderRa={8}
+            color="black"
+            textC="#dfd1b8"
+            onPress={openCamera1}
+            title={'Camera 1'}
+          />
           {camera1photo ? (
             <TouchableOpacity>
               <Image
@@ -206,102 +266,99 @@ export default function DonateCamera({navigation}) {
                   height: 200,
                   width: 200,
                   backgroundColor: 'white',
-                  position: 'absolute',
-                  right: 100,
-                  bottom: -170,
                   borderColor: 'white',
                   borderWidth: 5,
+                  marginVertical: 10,
                 }}
                 source={{uri: cameraPhoto}}
               />
             </TouchableOpacity>
-          ):null }
-        </View>
-        <View>
-          {camera2 ? (
-            <View >
-              <View style={{width: 200, bottom: -30, right: -30, position:'absolute'}}>
-              <Buttons
-                height={51}
-                fontS={15}
-                borderRa={8}
-                color="black"
-                textC="#dfd1b8"
-                onPress={openCamera2}
-                title={'Camera 2'}
-              />
-              </View>
-              {camera2photo? (
-                <TouchableOpacity>
-                  <Image
-                    style={{
-                      height: 200,
-                      width: 200,
-                      backgroundColor: 'white',
-                      position: 'absolute',
-                      right: -30,
-                      bottom: -235,
-                      borderColor: 'white',
-                      borderWidth: 5,
-                    }}
-                    source={{uri: cameraPhoto}}
-                  />
-                </TouchableOpacity>
-              ):null }
-            </View>
           ) : null}
-        </View>
-        <View>
-          {camera3 ? (
-            <View >
-              <View style={{width: 200, bottom: -293, right: -30, position:'absolute'}}>
-              <Buttons
-                height={51}
-                fontS={15}
-                borderRa={8}
-                color="black"
-                textC="#dfd1b8"
-                onPress={openCamera3}
-                title={'Camera 3'}
-              />
+          <View>
+            {camera2 ? (
+              <View>
+                <Buttons
+                  height={51}
+                  fontS={15}
+                  width={150}
+                  borderRa={8}
+                  color="black"
+                  textC="#dfd1b8"
+                  onPress={openCamera2}
+                  title={'Camera 2'}
+                />
+                {camera2photo ? (
+                  <TouchableOpacity>
+                    <Image
+                      style={{
+                        height: 200,
+                        width: 200,
+                        backgroundColor: 'white',
+                        borderColor: 'white',
+                        borderWidth: 5,
+                        marginVertical: 10,
+                      }}
+                      source={{uri: cameraPhoto}}
+                    />
+                  </TouchableOpacity>
+                ) : null}
               </View>
-              {camera3photo? (
-                <TouchableOpacity>
-                  <Image
-                    style={{
-                      height: 200,
-                      width: 200,
-                      backgroundColor: 'white',
-                      position: 'absolute',
-                      right: -30,
-                      bottom: -495,
-                      borderColor: 'white',
-                      borderWidth: 5,
-                    }}
-                    source={{uri: cameraPhoto}}
-                  />
-                </TouchableOpacity>
-              ):null }
-            </View>
-          ) : null}
-        </View>
-        <View
-          style={{width: '60%', flexDirection: 'row', right: -45, top: 280}}>
-          <View style={{right: 10, width: '100%'}}>
-            <Buttons
-              height={51}
-              fontS={15}
-              borderRa={8}
-              color="black"
-              textC="#dfd1b8"
-              onPress={() => navigation.navigate('DonationFinish')}
-              onPressIn={() => finishp()}
-              title={'Save Images'}
-            />
+            ) : null}
+          </View>
+          <View>
+            {camera3 ? (
+              <View>
+                <Buttons
+                  height={51}
+                  fontS={15}
+                  borderRa={8}
+                  color="black"
+                  width={150}
+                  textC="#dfd1b8"
+                  onPress={openCamera3}
+                  title={'Camera 3'}
+                />
+                {camera3photo ? (
+                  <TouchableOpacity>
+                    <Image
+                      style={{
+                        height: 200,
+                        width: 200,
+                        backgroundColor: 'white',
+                        borderColor: 'white',
+                        borderWidth: 5,
+                        marginVertical: 10,
+                      }}
+                      source={{uri: cameraPhoto}}
+                    />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            ) : null}
           </View>
         </View>
-        </View>
-      {/* </ScrollView> */}
-    </KeyboardAvoidingView>
+      </ScrollView>
+      <View
+        style={{
+          width: '100%',
+          position: 'absolute',
+          bottom: 20,
+          alignItems: 'center',
+        }}>
+        <Buttons
+          height={51}
+          fontS={15}
+          borderRa={8}
+          color="black"
+          textC="#dfd1b8"
+          onPress={() =>{ 
+            upload();
+
+            // navigation.navigate('DonationFinish')
+          }}
+            title={'Save Images'}
+        />
+      </View>
+    </View>
   );
 }
