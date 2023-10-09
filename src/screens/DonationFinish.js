@@ -20,6 +20,15 @@ export default function DonationFinish({navigation}) {
   const [date, setDate] = useState('')
 
   useEffect(() => {
+    database.ref("/HurricaneDatabase/Donater/").once('value')
+        .then(snapshot => {
+          console.log('User data: ', snapshot.val());
+          const donators = snapshot.val();
+
+          Object.keys(donators).map(item=>{
+            console.log(item,donators?.[item])
+            })
+        });
     getMyStringValue().then((text)=>{
       if (text?.length>0){
         database.ref("/HurricaneDatabase/Donater/"+text).once('value')

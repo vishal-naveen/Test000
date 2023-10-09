@@ -74,21 +74,6 @@ export default function Donate({navigation}) {
       setDate(currentDate);
     };
 
-    let camOptions = {
-      saveToPhotos: true,
-      mediaType: 'photo',
-    }
-
-    const openCamera = async () => {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      )
-      if (granted === PermissionsAndroid.RESULTS.GRANTED){
-        const result = await launchCamera(camOptions)
-        setCameraPhoto(result.assets[0].uri)
-        console.log(result)
-      }
-    }
 
     
 
@@ -96,7 +81,7 @@ export default function Donate({navigation}) {
         setStringValue(name)
         //setStringValue(number)
       
-        database.ref("/HurricaneDatabase/Donater/"+name+number).set({
+        database.ref("/HurricaneDatabase/Donater/"+name).update({
           pickupD: date.toLocaleDateString(),
           pickupT: date.toLocaleTimeString(),
         })
@@ -148,7 +133,10 @@ export default function Donate({navigation}) {
           <View style={{right: 40, bottom: 60}}>
             <Text
               style={{color: 'white', fontSize: 17}}
-              onPress={() => navigation.navigate('DonateCamera')}>
+              onPress={() => {
+                finishp();
+                navigation.navigate('DonateCamera');
+              }}>
               Items: Scan
             </Text>
             {/* <Buttons
@@ -190,7 +178,8 @@ export default function Donate({navigation}) {
                   placeholder="Location Of Pickup"
                   onPress={(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
-                    console.log(data, details);
+                    console.log('data',JSON.stringify(data));
+                    console.log('details',JSON.stringify(details.description));
                   }}
                   query={{
                     key: 'AIzaSyDyqDQyayPKhjQPuvwuDAcOkzF8rS5cw28',
@@ -199,9 +188,8 @@ export default function Donate({navigation}) {
                   listHoverColor="#09172d"
                   backgroundColor="#09172d"
                   textInputProps={{
-                    backgroundColor:"white"
+                    backgroundColor: 'white',
                   }}
-              
                 />
               </View>
             </View>

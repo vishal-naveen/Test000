@@ -7,6 +7,7 @@ import TInput from '../components/TInput';
 import AuthHeader from '../components/AuthHeader';
 import PasswordIn from '../components/PasswordIn';
 import { useNavigation } from '@react-navigation/native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 export default function Volunteering({}) {
   const navigation = useNavigation();
@@ -22,7 +23,26 @@ export default function Volunteering({}) {
             <Text style={{color:'white'}}>Help Collect Food!</Text>
           </View>
           <View style={{width:'60%', alignItems:'center', bottom:100, flexDirection:'row', right:20}}>
-            <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Location'} />
+          <View style={{height: 100, width: 300}}>
+                <GooglePlacesAutocomplete
+                  placeholder="Location Of Pickup"
+                  onPress={(data, details = null) => {
+                    // 'details' is provided when fetchDetails = true
+                    // console.log('data',JSON.stringify(data));
+                    console.log(JSON.stringify(details?.geometry?.location));
+                  }}
+                  query={{
+                    key: 'AIzaSyDyqDQyayPKhjQPuvwuDAcOkzF8rS5cw28',
+                    language: 'en',
+                  }}
+                  fetchDetails={true}
+                  listHoverColor="#09172d"
+                  backgroundColor="#09172d"
+                  textInputProps={{
+                    backgroundColor: 'white',
+                  }}
+                />
+              </View>
             <View style={{width:'40%', bottom:10, left:20}}>
                 <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Homeh')} title={'Search'} />
             </View>

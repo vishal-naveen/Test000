@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   ViewBase,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import TInput from '../components/TInput';
@@ -26,38 +27,38 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {firebase} from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 
-const dbStorage = 
-  storage().ref('gs://hurricane-help.appspot.com');
+const dbStorage = storage().ref('gs://camera1');
 const database = firebase
   .app()
   .database('https://hurricane-help-default-rtdb.firebaseio.com/');
 
 export default function DonateCamera({navigation}) {
-  const [cameraPhoto, setCameraPhoto] = useState();
-
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const [mode, setMode] = useState('date');
-  const [text, setText] = useState('Empty');
+  const [loader, setLoader] = useState(false);
+  const [cameraPhoto1, setCameraPhoto1] = useState('');
+  const [cameraPhoto2, setCameraPhoto2] = useState('');
+  const [cameraPhoto3, setCameraPhoto3] = useState('');
 
   const [name, setName] = useState('');
-
-  const [camera1photo, setcamera1photo] = useState(false);
-  const [camera2, setcamera2] = useState(false);
-  const [camera2photo, setcamera2photo] = useState(false);
-  const [camera3, setcamera3] = useState(false);
-  const [camera3photo, setcamera3photo] = useState(false);
 
   useEffect(() => {
     getMyStringValue().then(text => {
       if (text?.length > 0) {
         setName(text);
-        console.log('Username ==>>',text)
+        console.log('Username ==>>', text);
+        database.ref("/HurricaneDatabase/Donater/"+text).once('value')
+        .then(snapshot => {
+          const data = snapshot?.val();
+          // setCameraPhoto1(data?.camera1)
+          // setCameraPhoto2(data?.camera2)
+          // setCameraPhoto3(data?.camera3)
+        });
       }
     });
 
+
     return () => {};
   }, []);
+
 
   const getMyStringValue = async () => {
     try {
@@ -69,25 +70,6 @@ export default function DonateCamera({navigation}) {
     console.log('Done.');
   };
 
-  const showMode = currentmode => {
-    setShow(true);
-    setMode(currentmode);
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-
-  const onChangei = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
-  };
-
   let camOptions = {
     saveToPhotos: true,
     mediaType: 'photo',
@@ -96,140 +78,81 @@ export default function DonateCamera({navigation}) {
   };
 
   const openCamera1 = async () => {
-    openCamera1img();
+    //openCamera1img();
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CAMERA,
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       const result = await launchCamera(camOptions);
-      setCameraPhoto(result.assets[0].uri);
+      setCameraPhoto1(result.assets[0].uri);
       console.log(result);
     }
   };
 
-  const openCamera1img = () => {
-    const timeout = setTimeout(() => {
-      setcamera2(true);
-    }, 3000);
-    const timeout1 = setTimeout(() => {
-      setcamera1photo(true);
-    }, 2000);
-  };
 
   const openCamera2 = async () => {
-    openCamera2img();
+    //openCamera2img();
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CAMERA,
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       const result = await launchCamera(camOptions);
-      setCameraPhoto(result.assets[0].uri);
+      setCameraPhoto2(result.assets[0].uri);
       console.log(result);
     }
   };
 
-  const openCamera2img = () => {
-    const timeout = setTimeout(() => {
-      setcamera3(true);
-    }, 3000);
-    const timeout1 = setTimeout(() => {
-      setcamera2photo(true);
-    }, 2000);
-  };
 
   const openCamera3 = async () => {
-    openCamera3img();
+    //openCamera3img();
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CAMERA,
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       const result = await launchCamera(camOptions);
-      setCameraPhoto(result.assets[0].uri);
+      setCameraPhoto3(result.assets[0].uri);
       console.log(result);
     }
   };
 
-  const openCamera3img = () => {
-    const timeout = setTimeout(() => {
-      setcamera3photo(true);
-    }, 2000);
+
+
+
+  const getCloudStorageRef = filename => {
+    const dbStorage = storage().ref('gs://' + name + '/' + filename);
+    return dbStorage;
   };
 
-  function finishp() {
-    setStringValue(name);
+  const upload = async (cameraPhoto, filename) => {
+    return new Promise((res, reject) => {
+      //cameraPhoto
+      if (cameraPhoto?.length <= 0 && cameraPhoto?.includes("firebase")) {
+        return res('');
+      }
+      const uploadUri =
+        Platform.OS === 'ios'
+          ? cameraPhoto.replace('file://', '')
+          : cameraPhoto;
+      const metaData = {contentType: 'image/jpeg'};
+      const task = getCloudStorageRef(filename).putFile(uploadUri, metaData);
 
-    database
-      .ref('/HurricaneDatabase/Donater/' + name)
-      .set({
-        pickupD: date.toLocaleDateString(),
-        pickupT: date.toLocaleTimeString(),
-      })
-      .then(() =>
+      task.on('state_changed', taskSnapshot => {
         console.log(
-          'Data set.' + date.toLocaleDateString() + date.toLocaleTimeString(),
-        ),
-      );
-  }
+          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
+        );
+      });
 
-  const setStringValue = async value => {
-    try {
-      AsyncStorage.setItem('name', value);
-    } catch (e) {
-      // save error
-    }
-
-    console.log('Done.');
-  };
-
-  const upload = async () => {
-    //cameraPhoto
-    const filename = cameraPhoto.substring(cameraPhoto.lastIndexOf('/') + 1);
-    const uploadUri =
-      Platform.OS === 'ios' ? cameraPhoto.replace('file://', '') : cameraPhoto;
-    const metaData = {contentType: 'image/jpeg'};
-    const task = dbStorage.putFile(uploadUri, metaData);
-
-    task.on('state_changed', taskSnapshot => {
-      console.log(
-        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
-      );
+      task.then(async () => {
+        const url = await getCloudStorageRef(filename).getDownloadURL();
+        database
+          .ref('/HurricaneDatabase/Donater/' + name + '/' + filename)
+          .set(url)
+          .then(() => {
+            return res(filename + 'is uploaded successfully');
+          });
+      });
     });
-
-    task.then(() => {
-      console.log('Image uploaded to the bucket!');
-    //   const data = {
-    //     filename: filename,
-    //     photo: res.downloadURL, // retrieve image URL
-    //   };
-    //    database
-    // .ref('/HurricaneDatabase/Donater/' + name)
-    // .set(
-    //   data
-    // )
-    // .then(() =>
-    //   {
-      alert('file 1 is saved successfully')
-    // }
-    // );
-    });
-    // const res = await dbStorage
-    //   .putFile(uploadUri, metaData); // put image file to GCS
-    // return res;
   };
-  // const userId = firebase.auth().currentUser.uid;
-  // const res = await upload(`absolute/path/to/image.JPG`, `image.JPG`, `image/jpeg`); // function in step 1
-  // const data = {
-  //     name: 'User Name'
-  //     photo: res.downloadURL, // retrieve image URL
-  // };
-  // firebase.database().ref('users/' + userId).set(data);
-  // const filename = uri.substring(uri.lastIndexOf('/') + 1);
-  //   const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-  //   setUploading(true);
-  //   setTransferred(0);
-  //   const task = storage()
-  //     .ref(filename)
-  //     .putFile(uploadUri);
 
   return (
     <View style={{flex: 1, backgroundColor: '#09172d'}}>
@@ -259,7 +182,7 @@ export default function DonateCamera({navigation}) {
             onPress={openCamera1}
             title={'Camera 1'}
           />
-          {camera1photo ? (
+          {cameraPhoto1?.length>0 ? (
             <TouchableOpacity>
               <Image
                 style={{
@@ -270,12 +193,12 @@ export default function DonateCamera({navigation}) {
                   borderWidth: 5,
                   marginVertical: 10,
                 }}
-                source={{uri: cameraPhoto}}
+                source={{uri: cameraPhoto1}}
               />
             </TouchableOpacity>
           ) : null}
           <View>
-            {camera2 ? (
+          {cameraPhoto1?.length>0 ? (
               <View>
                 <Buttons
                   height={51}
@@ -287,7 +210,7 @@ export default function DonateCamera({navigation}) {
                   onPress={openCamera2}
                   title={'Camera 2'}
                 />
-                {camera2photo ? (
+                {cameraPhoto2?.length>0 ? (
                   <TouchableOpacity>
                     <Image
                       style={{
@@ -298,7 +221,7 @@ export default function DonateCamera({navigation}) {
                         borderWidth: 5,
                         marginVertical: 10,
                       }}
-                      source={{uri: cameraPhoto}}
+                      source={{uri: cameraPhoto2}}
                     />
                   </TouchableOpacity>
                 ) : null}
@@ -306,7 +229,7 @@ export default function DonateCamera({navigation}) {
             ) : null}
           </View>
           <View>
-            {camera3 ? (
+          {cameraPhoto2?.length>0 ? (
               <View>
                 <Buttons
                   height={51}
@@ -318,7 +241,7 @@ export default function DonateCamera({navigation}) {
                   onPress={openCamera3}
                   title={'Camera 3'}
                 />
-                {camera3photo ? (
+                {cameraPhoto3?.length>0 ? (
                   <TouchableOpacity>
                     <Image
                       style={{
@@ -329,7 +252,7 @@ export default function DonateCamera({navigation}) {
                         borderWidth: 5,
                         marginVertical: 10,
                       }}
-                      source={{uri: cameraPhoto}}
+                      source={{uri: cameraPhoto3}}
                     />
                   </TouchableOpacity>
                 ) : null}
@@ -351,14 +274,36 @@ export default function DonateCamera({navigation}) {
           borderRa={8}
           color="black"
           textC="#dfd1b8"
-          onPress={() =>{ 
-            upload();
-
+          onPress={async () => {
+            setLoader(true);
+            await upload(cameraPhoto1, 'camera1');
+            await upload(cameraPhoto2, 'camera2');
+            await upload(cameraPhoto3, 'camera3');
+            setLoader(false);
+            alert('images uploaded successfully');
             // navigation.navigate('DonationFinish')
           }}
-            title={'Save Images'}
+          title={'Save Images'}
         />
       </View>
+      {loader && (
+        <View
+          style={{
+            backgroundColor: '#0009',
+            position: 'absolute',
+            left: 0,
+            bottom: 0,
+            top: 0,
+            right: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator size="large" color="white" />
+          <Text style={{color: 'white', fontSize: 16}}>
+            Image Uploading In-progress
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
