@@ -136,23 +136,23 @@ export default function NewDonate({navigation}) {
               placer={'Phone Number'}
             />
           </View>
-          <View style={{right: 40}}>
+          <View style={{right: 10}}>
             <View style={{flexDirection: 'row'}}>
             <View style={{flexDirection: 'row'}}>
               <Text
-                style={{color: 'white', fontSize: 17}}
+                style={{color: 'white', fontSize: 15}}
                 onPress={showDatepicker}>
                 Pick-up Date:{' '}
               </Text>
-              <Text style={{color: 'white'}}>{date.toLocaleDateString()}</Text>
+              <Text style={{color: 'white', top:0, fontSize:15}}>{date.toLocaleDateString()}</Text>
             </View>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', left:10}}>
               <Text
-                style={{color: 'white', fontSize: 17}}
+                style={{color: 'white', fontSize: 15}}
                 onPress={showTimepicker}>
                 Pick-up Time:{' '}
               </Text>
-              <Text style={{color: 'white'}}>{date.toLocaleTimeString()}</Text>
+              <Text style={{color: 'white', fontSize:15}}>{date.toLocaleTimeString()}</Text>
             </View>
             </View>
             {/* <View>
@@ -177,8 +177,10 @@ export default function NewDonate({navigation}) {
               </View>
             </View> */}
           </View>
-          <View style={{height:100,width:100, borderColor:'#1F3F73', borderWidth:2}}>
-            <TouchableOpacity style={{backgroundColor:'#1F3F73'}}></TouchableOpacity>
+          <View style={{padding:10,margin:10,height:150,width:'88%', borderColor:'#1F3F73', borderWidth:2}}>
+            <TouchableOpacity style={{backgroundColor:'#1F3F73'}}>
+              <Text style={{backgroundColor:'#09172d',height:26, color:'white', fontSize:25, position:'absolute', left:300, bottom:-20}}>+</Text>
+            </TouchableOpacity>
           </View>
           <View
             style={{width: '60%', flexDirection: 'row', right: 57, top: 20}}>
