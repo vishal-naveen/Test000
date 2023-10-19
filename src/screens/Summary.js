@@ -77,8 +77,9 @@ export default function Summary() {
                         </View>}
                     {(xValues.length > 0 && yValues.length > 0) && <View style={{ alignItems: "center",marginBottom:20 }}>{xValues.map((i, index) => {
                         return (
-                            <View key={index.toString()} style={{ width: "100%", flexDirection: "row", marginTop: index == 0 ? 20 : 3,justifyContent:"center" }}>
-                                <View style={{ flex: 0.3, flexDirection: "row",justifyContent:"flex-start" }}>
+                            <View key={index.toString()} style={{ width: "100%", flexDirection: "row", marginTop: index == 0 ? 20 : 3,}}>
+                               <View style={{flex:0.4}}/>
+                                <View style={{ flex: 0.6, flexDirection: "row",justifyContent:"flex-start" }}>
                                     <Text style={{ marginLeft: 5, color:'#dfd1b8', textAlign:"left" }}>{i} - {(yValues[index].y).toString()}</Text>
                                 </View>  
                                 </View>
@@ -123,7 +124,7 @@ export default function Summary() {
 
                     </View>
 
-                    <View style={{ marginVertical: 50, alignSelf: "center" }}>
+                    <View style={{ marginVertical: 50, alignSelf: "center",width:"100%",alignItems:"center" }}>
                         {totalCountData != 0 && <PieChart
                             widthAndHeight={widthAndHeight}
                             series={pieData.map(i => i.percentage)}
