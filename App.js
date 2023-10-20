@@ -10,7 +10,7 @@ import Volunteering from './src/screens/Volunteering';
 import Donate from './src/screens/Donate';
 import DonationFinish from './src/screens/DonationFinish';
 import DonateCamera from './src/screens/DonateCamera';
-import NewDonate from './src/screens/NewDonate';
+import DonateCopy from './src/screens/DonateCopy';
 import { useEffect } from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -30,10 +30,10 @@ export default function App() {
     headerShown: false
   }}>
         <Stack.Screen 
-          name="Login"
-          component={Login}
+          name="Signup"
+          component={SignUp}
         />
-        <Stack.Screen name="SignUp" component={SignUp}/>
+        <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="Verifyphone" component={Verifyphone}/>
         <Stack.Screen name="ResetPassEm" component={ResetPassEm}/>
         <Stack.Screen name="ResetPassPh" component={ResetPassPh}/>
@@ -42,7 +42,7 @@ export default function App() {
         <Stack.Screen name="Donate" component={Donate}/>
         <Stack.Screen name="DonationFinish" component={DonationFinish}/>
         <Stack.Screen name="DonateCamera" component={DonateCamera}/>
-        <Stack.Screen name="NewDonate" component={NewDonate}/>
+        <Stack.Screen name="DonateCopy" component={DonateCopy}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

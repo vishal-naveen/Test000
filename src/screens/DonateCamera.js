@@ -283,7 +283,7 @@ export default function DonateCamera({navigation}) {
             alert('images uploaded successfully');
             // navigation.navigate('DonationFinish')
           }}
-          title={'Save Images'}
+          title={'Finish'}
         />
       </View>
       {loader && (

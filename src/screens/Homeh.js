@@ -31,7 +31,7 @@ export default function Homeh({}) {
           <View style={{width:225, height:100, flexDirection:'row', bottom:-20, right:70}}>
             <Buttons height={61} onPress={()=>navigation.navigate('Volunteering')} fontS={15} borderRa={8} color='black' textC='#7e90ac' title="Start Volunteering"/>
             <View style={{width:225, height:100, left:20}}>
-              <Buttons height={61} fontS={15} borderRa={8} color='black' textC='#7e90ac' title="Donate" onPress={()=>navigation.navigate('NewDonate')}/>
+              <Buttons height={61} fontS={15} borderRa={8} color='black' textC='#7e90ac' title="Donate" onPress={()=>navigation.navigate('DonateCopy')}/>
             </View>
           </View>
           <View style={{bottom:-75, right:0}}>
