@@ -26,23 +26,21 @@ export default function App() {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{
-    headerShown: false
-  }}>
-        <Stack.Screen 
-          name="Signup"
-          component={SignUp}
-        />
-        <Stack.Screen name="Login" component={Login}/>
-        <Stack.Screen name="Verifyphone" component={Verifyphone}/>
-        <Stack.Screen name="ResetPassEm" component={ResetPassEm}/>
-        <Stack.Screen name="ResetPassPh" component={ResetPassPh}/>
-        <Stack.Screen name="Homeh" component={Homeh}/>
-        <Stack.Screen name="Volunteering" component={Volunteering}/>
-        <Stack.Screen name="Donate" component={Donate}/>
-        <Stack.Screen name="DonationFinish" component={DonationFinish}/>
-        <Stack.Screen name="DonateCamera" component={DonateCamera}/>
-        <Stack.Screen name="DonateCopy" component={DonateCopy}/>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen name="Signup" component={SignUp} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Verifyphone" component={Verifyphone} />
+        <Stack.Screen name="ResetPassEm" component={ResetPassEm} />
+        <Stack.Screen name="ResetPassPh" component={ResetPassPh} />
+        <Stack.Screen name="Homeh" component={Homeh} />
+        <Stack.Screen name="Volunteering" component={Volunteering} />
+        <Stack.Screen name="Donate" component={Donate} />
+        <Stack.Screen name="DonationFinish" component={DonationFinish} />
+        <Stack.Screen name="DonateCamera" component={DonateCamera} />
+        <Stack.Screen name="DonateCopy" component={DonateCopy} />
       </Stack.Navigator>
     </NavigationContainer>
   );

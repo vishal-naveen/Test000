@@ -52,8 +52,8 @@ export default function SignUp({navigation}) {
           </View>
          <View style={{width: "100%", alignItems:'center', justifyContent:'center', bottom:50}}>
             <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Username'} />
-            <TInput color='#dfd1b8' placer={'Email'} />
-            <TInput color='#dfd1b8' placer={'Phone Number'} onChangeText={(text)=>{setEmailp(text)}}/>
+            <TInput color='#dfd1b8' placer={'Email'} onChangeText={(text)=>{setEmailp(text)}}/>
+            <TInput color='#dfd1b8' placer={'Phone Number'}/>
             <PasswordIn color='#dfd1b8' placer={'Password'} onChangeText={(text)=>{setPassp(text)}}/>
             <PasswordIn color='#dfd1b8' placer={'Re-enter Password'} />
             <Buttons height={41} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={() => {
