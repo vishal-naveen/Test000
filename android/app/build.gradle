@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
 
@@ -95,7 +96,7 @@ android {
 
     namespace "com.reactnative_project"
     defaultConfig {
-        applicationId "com.reactnative_project"
+        applicationId "com.hurrican.help"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -151,6 +152,10 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+
+    apply plugin: 'com.android.application'
+    apply plugin: 'com.google.gms.google-services'
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 

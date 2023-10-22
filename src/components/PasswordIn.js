@@ -3,16 +3,17 @@ import React from 'react';
 import {View, TextInput, Text} from 'react-native'
 
 export default function TInput(props) {
-    const {placer} = props
+    const {placer, onChangeText, color} = props
      return (
        <View
          style={{
            borderWidth: 1,
-           borderColor: '#000',
+           borderColor: 'black',
            width: '80%',
            marginBottom: 20,
+           borderRadius:10,
          }}>
-         <TextInput placeholder={placer} />
+         <TextInput textAlign='left' placeholderTextColor={color} color={color} onChangeText={onChangeText} placeholder={placer} secureTextEntry={true}/>
        </View>
      );
 }
