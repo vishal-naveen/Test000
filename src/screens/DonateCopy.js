@@ -59,9 +59,20 @@ export default function DonateCopy({navigation}) {
   const [box3Cat, setbox3Cat] = useState('');
   const [box3Q, setbox3Q] = useState('');
 
+  const [box1Catt, setbox1Catt] = useState('Quantity');
+  const [box1Qs, setbox1Qs] = useState('');
+  const [box2Catt, setbox2Catt] = useState('Quantity');
+  const [box2Qs, setbox2Qs] = useState('');
+  const [box3Catt, setbox3Catt] = useState('Quantity');
+  const [box3Qs, setbox3Qs] = useState('');
+
+  
+
   const [openPickerC1,setOpenPickerC1] = useState(false);
   const [openPickerC2,setOpenPickerC2] = useState(false);
-  const [openPickerC3,setOpenPickerC3] = useState(false);
+  const [openPickerCat1,setOpenPickerCat1] = useState(false);
+  const [openPickerCat2,setOpenPickerCat2] = useState(false);
+  const [openPickerCat3,setOpenPickerCat3] = useState(false);
 
 
   useEffect(() => {
@@ -116,13 +127,12 @@ export default function DonateCopy({navigation}) {
       { label: 'Russia', value: 'Russia' },
   ]);
   const data = [
-    {key: '1', value: 'Mobiles'},
-    {key: '2', value: 'Appliances'},
-    {key: '3', value: 'Cameras'},
-    {key: '4', value: 'Computers'},
-    {key: '5', value: 'Vegetables'},
-    {key: '6', value: 'Diary Products'},
-    {key: '7', value: 'Drinks'},
+    {key: '1', value: 'Canned Foods'},
+    {key: '2', value: 'Baked Goods'},
+    {key: '3', value: 'Breakfast Items'},
+    {key: '4', value: 'Snacks'},
+    {key: '5', value: 'Toiletries'},
+    {key: '6', value: 'Other'},
   ];
 
   const showbox2 = () => {
@@ -204,12 +214,20 @@ export default function DonateCopy({navigation}) {
                 height: 46,
                 backgroundColor: '#09172d',
                 borderRadius: 8,
-                borderColor:'#dfd1b8',
-                borderWidth:1
+                borderColor: '#dfd1b8',
+                borderWidth: 1,
               }}
-              onPress={()=>setOpenPickerC1(true)}
-              >
-              <Text style={{fontSize: 15, color: '#dfd1b8', alignSelf:'baseline', top:10, left:10}}>{dateQ}</Text>
+              onPress={() => setOpenPickerC1(true)}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: '#dfd1b8',
+                  alignSelf: 'baseline',
+                  top: 10,
+                  left: 10,
+                }}>
+                {dateQ}
+              </Text>
             </TouchableOpacity>
           </View>
           <View>
@@ -264,8 +282,7 @@ export default function DonateCopy({navigation}) {
                               marginTop: 10,
                               color: '#09172d',
                               alignSelf: 'center',
-                              fontWeight:
-                                dateQ == i.label ? 'bold' : 'normal',
+                              fontWeight: dateQ == i.label ? 'bold' : 'normal',
                             }}>
                             {i.label}
                           </Text>
@@ -292,86 +309,94 @@ export default function DonateCopy({navigation}) {
                 height: 46,
                 backgroundColor: '#09172d',
                 borderRadius: 8,
-                borderColor:'#dfd1b8',
-                borderWidth:1
+                borderColor: '#dfd1b8',
+                borderWidth: 1,
               }}
-              onPress={()=>setOpenPickerC2(true)}
-              >
-              <Text style={{fontSize: 15, color: '#dfd1b8', alignSelf:'baseline', top:10, left:10}}>{locationQ}</Text>
+              onPress={() => setOpenPickerC2(true)}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: '#dfd1b8',
+                  alignSelf: 'baseline',
+                  top: 10,
+                  left: 10,
+                }}>
+                {locationQ}
+              </Text>
             </TouchableOpacity>
             <View>
-            <Modal
-              animationType={'slide'}
-              transparent={true}
-              visible={openPickerC2}
-              onRequestClose={() => setOpenPickerC2(false)}>
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: '#01223770',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+              <Modal
+                animationType={'slide'}
+                transparent={true}
+                visible={openPickerC2}
+                onRequestClose={() => setOpenPickerC2(false)}>
                 <View
                   style={{
-                    borderWidth: 1,
-                    backgroundColor: '#dfd1b8',
-                    height: '50%',
-                    width: '90%',
-                    margin: 20,
-                    borderRadius: 20,
+                    flex: 1,
+                    backgroundColor: '#01223770',
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <Text
+                  <View
                     style={{
-                      fontSize: 30,
-                      marginTop: 20,
-                      color: '#09172d',
-                      alignSelf: 'center',
+                      borderWidth: 1,
+                      backgroundColor: '#dfd1b8',
+                      height: '50%',
+                      width: '90%',
+                      margin: 20,
+                      borderRadius: 20,
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}>
-                    Select location
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        marginTop: 20,
+                        color: '#09172d',
+                        alignSelf: 'center',
+                      }}>
+                      Select location
+                    </Text>
 
-                  <ScrollView
-                    style={{width: '90%'}}
-                    showsVerticalScrollIndicator={false}>
-                    {items.map(i => {
-                      return (
-                        <TouchableOpacity
-                          key={i.label}
-                          onPress={() => {
-                            setLocaitonQ(i.label);
-                            setOpenPickerC2(false);
-                          }}
-                          style={{flex: 1}}>
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              marginTop: 10,
-                              color: '#09172d',
-                              alignSelf: 'center',
-                              fontWeight:
-                                locationQ == i.label ? 'bold' : 'normal',
-                            }}>
-                            {i.label}
-                          </Text>
-                          <View
-                            style={{
-                              height: 1,
-                              marginTop: 10,
-                              width: '100%',
-                              backgroundColor: '#09172d',
+                    <ScrollView
+                      style={{width: '90%'}}
+                      showsVerticalScrollIndicator={false}>
+                      {items.map(i => {
+                        return (
+                          <TouchableOpacity
+                            key={i.label}
+                            onPress={() => {
+                              setLocaitonQ(i.label);
+                              setOpenPickerC2(false);
                             }}
-                          />
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </ScrollView>
+                            style={{flex: 1}}>
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                marginTop: 10,
+                                color: '#09172d',
+                                alignSelf: 'center',
+                                fontWeight:
+                                  locationQ == i.label ? 'bold' : 'normal',
+                              }}>
+                              {i.label}
+                            </Text>
+                            <View
+                              style={{
+                                height: 1,
+                                marginTop: 10,
+                                width: '100%',
+                                backgroundColor: '#09172d',
+                              }}
+                            />
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
+                  </View>
                 </View>
-              </View>
-            </Modal>
-          </View>
+              </Modal>
+            </View>
           </View>
         </View>
         <View
@@ -386,17 +411,103 @@ export default function DonateCopy({navigation}) {
             bottom: 110,
             left: 15,
           }}>
-          <View style={{right: 5, top: 95}}>
-            <SelectList
-              setSelected={val => setSelected(val)}
-              onSelect={() => setbox1Cat(selected)}
-              data={data}
-              save="value"
-              dropdownStyles={{borderColor: '#dfd1b8', width: '50%'}}
-              boxStyles={{borderColor: '#dfd1b8', width: '50%'}}
-              inputStyles={{color: '#dfd1b8', right: 13}}
-              dropdownTextStyles={{color: 'pink'}}
-            />
+          <View style={{right: -100, width: '50%'}}>
+            <View style={{right: 70, top: 95}}>
+              <TouchableOpacity
+                style={{
+                  width: '75%',
+                  height: 46,
+                  backgroundColor: '#09172d',
+                  borderRadius: 8,
+                  borderColor: '#dfd1b8',
+                  borderWidth: 1,
+                }}
+                onPress={() => setOpenPickerCat1(true)}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: '#dfd1b8',
+                    alignSelf: 'baseline',
+                    top: 10,
+                    left: 10,
+                  }}>
+                  {box1Catt}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Modal
+                animationType={'slide'}
+                transparent={true}
+                visible={openPickerCat1}
+                onRequestClose={() => setOpenPickerCat1(false)}>
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#01223770',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      borderWidth: 1,
+                      backgroundColor: '#dfd1b8',
+                      height: '50%',
+                      width: '90%',
+                      margin: 20,
+                      borderRadius: 20,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        marginTop: 20,
+                        color: '#09172d',
+                        alignSelf: 'center',
+                      }}>
+                      Select location
+                    </Text>
+
+                    <ScrollView
+                      style={{width: '90%'}}
+                      showsVerticalScrollIndicator={false}>
+                      {items.map(i => {
+                        return (
+                          <TouchableOpacity
+                            key={i.label}
+                            onPress={() => {
+                              setbox1Catt(i.label);
+                              setOpenPickerCat1(false);
+                            }}
+                            style={{flex: 1}}>
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                marginTop: 10,
+                                color: '#09172d',
+                                alignSelf: 'center',
+                                fontWeight:
+                                  box1Catt == i.label ? 'bold' : 'normal',
+                              }}>
+                              {i.label}
+                            </Text>
+                            <View
+                              style={{
+                                height: 1,
+                                marginTop: 10,
+                                width: '100%',
+                                backgroundColor: '#09172d',
+                              }}
+                            />
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
+                  </View>
+                </View>
+              </Modal>
+            </View>
           </View>
           <View
             style={{
@@ -461,18 +572,104 @@ export default function DonateCopy({navigation}) {
               bottom: 100,
               left: 15,
             }}>
-            <View style={{right: 5, top: 50}}>
-              <SelectList
-                setSelected={val => setSelected(val)}
-                onSelect={() => setbox2Cat(selected)}
-                data={data}
-                save="value"
-                dropdownStyles={{borderColor: '#dfd1b8', width: '50%'}}
-                boxStyles={{borderColor: '#dfd1b8', width: '50%'}}
-                inputStyles={{color: '#dfd1b8', right: 13}}
-                dropdownTextStyles={{color: 'pink'}}
-              />
+            <View style={{right: -100, width: '50%'}}>
+            <View style={{right: 70, top: 51}}>
+              <TouchableOpacity
+                style={{
+                  width: '75%',
+                  height: 46,
+                  backgroundColor: '#09172d',
+                  borderRadius: 8,
+                  borderColor: '#dfd1b8',
+                  borderWidth: 1,
+                }}
+                onPress={() => setOpenPickerCat2(true)}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: '#dfd1b8',
+                    alignSelf: 'baseline',
+                    top: 10,
+                    left: 10,
+                  }}>
+                  {box2Catt}
+                </Text>
+              </TouchableOpacity>
             </View>
+            <View>
+              <Modal
+                animationType={'slide'}
+                transparent={true}
+                visible={openPickerCat2}
+                onRequestClose={() => setOpenPickerCat2(false)}>
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#01223770',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      borderWidth: 1,
+                      backgroundColor: '#dfd1b8',
+                      height: '50%',
+                      width: '90%',
+                      margin: 20,
+                      borderRadius: 20,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        marginTop: 20,
+                        color: '#09172d',
+                        alignSelf: 'center',
+                      }}>
+                      Select location
+                    </Text>
+
+                    <ScrollView
+                      style={{width: '90%'}}
+                      showsVerticalScrollIndicator={false}>
+                      {items.map(i => {
+                        return (
+                          <TouchableOpacity
+                            key={i.label}
+                            onPress={() => {
+                              setbox2Catt(i.label);
+                              setOpenPickerCat2(false);
+                            }}
+                            style={{flex: 1}}>
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                marginTop: 10,
+                                color: '#09172d',
+                                alignSelf: 'center',
+                                fontWeight:
+                                  box2Catt == i.label ? 'bold' : 'normal',
+                              }}>
+                              {i.label}
+                            </Text>
+                            <View
+                              style={{
+                                height: 1,
+                                marginTop: 10,
+                                width: '100%',
+                                backgroundColor: '#09172d',
+                              }}
+                            />
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
+                  </View>
+                </View>
+              </Modal>
+            </View>
+          </View>
             <View
               style={{
                 borderWidth: 1,
@@ -486,6 +683,7 @@ export default function DonateCopy({navigation}) {
                 position: 'absolute',
               }}>
               <TextInput
+                defaultValue="1"
                 keyboardType="numeric"
                 placeholder="Quantity"
                 placeholderTextColor="#dfd1b8"
@@ -535,19 +733,104 @@ export default function DonateCopy({navigation}) {
               bottom: 85,
               left: 15,
             }}>
-            <View style={{right: 5}}>
-              <SelectList
-                setSelected={val => setSelected(val)}
-                onSelect={() => setbox3Cat(selected)}
-                data={data}
-                save="value"
-                dropdownStyles={{borderColor: '#dfd1b8', width: '50%'}}
-                boxStyles={{borderColor: '#dfd1b8', width: '50%'}}
-                inputStyles={{color: '#dfd1b8', right: 13}}
-                dropdownTextStyles={{color: 'pink'}}
-                maxHeight={150}
-              />
+            <View style={{right: -100, width: '50%'}}>
+            <View style={{right: 70, top: 0}}>
+              <TouchableOpacity
+                style={{
+                  width: '75%',
+                  height: 46, 
+                  backgroundColor: '#09172d',
+                  borderRadius: 8,
+                  borderColor: '#dfd1b8',
+                  borderWidth: 1,
+                }}
+                onPress={() => setOpenPickerCat3(true)}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    color: '#dfd1b8',
+                    alignSelf: 'baseline',
+                    top: 10,
+                    left: 10,
+                  }}>
+                  {box3Catt}
+                </Text>
+              </TouchableOpacity>
             </View>
+            <View>
+              <Modal
+                animationType={'slide'}
+                transparent={true}
+                visible={openPickerCat3}
+                onRequestClose={() => setOpenPickerCat3(false)}>
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#01223770',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      borderWidth: 1,
+                      backgroundColor: '#dfd1b8',
+                      height: '50%',
+                      width: '90%',
+                      margin: 20,
+                      borderRadius: 20,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        marginTop: 20,
+                        color: '#09172d',
+                        alignSelf: 'center',
+                      }}>
+                      Select location
+                    </Text>
+
+                    <ScrollView
+                      style={{width: '90%'}}
+                      showsVerticalScrollIndicator={false}>
+                      {items.map(i => {
+                        return (
+                          <TouchableOpacity
+                            key={i.label}
+                            onPress={() => {
+                              setbox3Catt(i.label);
+                              setOpenPickerCat3(false);
+                            }}
+                            style={{flex: 1}}>
+                            <Text
+                              style={{
+                                fontSize: 20,
+                                marginTop: 10,
+                                color: '#09172d',
+                                alignSelf: 'center',
+                                fontWeight:
+                                  box3Catt == i.label ? 'bold' : 'normal',
+                              }}>
+                              {i.label}
+                            </Text>
+                            <View
+                              style={{
+                                height: 1,
+                                marginTop: 10,
+                                width: '100%',
+                                backgroundColor: '#09172d',
+                              }}
+                            />
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </ScrollView>
+                  </View>
+                </View>
+              </Modal>
+            </View>
+          </View>
             <View
               style={{
                 borderWidth: 1,
@@ -561,6 +844,7 @@ export default function DonateCopy({navigation}) {
                 position: 'absolute',
               }}>
               <TextInput
+                defaultValue="1"
                 keyboardType="numeric"
                 placeholder="Quantity"
                 placeholderTextColor="#dfd1b8"
