@@ -12,6 +12,7 @@ import {
   Button,
   PermissionsAndroid,
   TouchableOpacity,
+  Modal
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import TInput from '../components/TInput';
@@ -26,9 +27,16 @@ import {firebase} from '@react-native-firebase/database';
 import {formatPhoneNumberIntl} from 'react-phone-number-input';
 import {SelectList} from 'react-native-dropdown-select-list';
 
+
+
+
 const database = firebase
   .app()
   .database('https://hurricane-help-default-rtdb.firebaseio.com/');
+
+  // database().ref('/HurricaneDatabase/LocationForDrives/Location1').on('value', snapshot => {
+  //   console.log('Dataset: ', snapshot.val())
+  // });
 
 export default function DonateCopy({navigation}) {
   const [cameraPhoto, setCameraPhoto] = useState();
@@ -50,6 +58,11 @@ export default function DonateCopy({navigation}) {
   const [box2Q, setbox2Q] = useState('');
   const [box3Cat, setbox3Cat] = useState('');
   const [box3Q, setbox3Q] = useState('');
+
+  const [openPickerC1,setOpenPickerC1] = useState(false);
+  const [openPickerC2,setOpenPickerC2] = useState(false);
+  const [openPickerC3,setOpenPickerC3] = useState(false);
+
 
   useEffect(() => {
     getMyStringValue().then(text => {
@@ -91,7 +104,17 @@ export default function DonateCopy({navigation}) {
   };
 
   const [selected, setSelected] = React.useState('');
-
+  const [items, setItems] = useState([
+      { label: 'Khanna', value: 'Khanna' },
+      { label: 'Ludhiana', value: 'Ludhiana' },
+      { label: 'Kanpur', value: 'Kanpur' },
+      { label: 'Delhi', value: 'Delhi' },
+      { label: 'Mohali', value: 'Mohali' },
+      { label: 'Goa', value: 'Goa' },
+      { label: 'Dubai', value: 'Dubai' },
+      { label: 'USA', value: 'USA' },
+      { label: 'Russia', value: 'Russia' },
+  ]);
   const data = [
     {key: '1', value: 'Mobiles'},
     {key: '2', value: 'Appliances'},
@@ -109,6 +132,9 @@ export default function DonateCopy({navigation}) {
   const showbox3 = () => {
     setBox3('1');
   };
+
+  const [dateQ, setDateQ] = useState('Date')
+  const [locationQ, setLocaitonQ] = useState('Location')
 
   function finishp() {
     //setStringValue(number)
@@ -164,32 +190,190 @@ export default function DonateCopy({navigation}) {
         <View style={{alignItems: 'center', bottom: 670, position: 'absolute'}}>
           <AuthHeader color="#dfd1b8" title={'Donate'} />
         </View>
-        <View style={{right: 5, top: 120, flexDirection:'row', position:'absolute'}}>
-            <View style={{left:120}}>
-              <SelectList
-                placeholder='Date'
-                data={data}
-                save="value"
-                dropdownStyles={{borderColor: '#dfd1b8'}}
-                boxStyles={{borderColor: '#dfd1b8'}}
-                inputStyles={{color: '#dfd1b8', right: 13}}
-                dropdownTextStyles={{color: 'pink'}}
-              />
-            </View>
-            <View style={{}}>
-              <SelectList
-              placeholder='Location'
-                setSelected={val => setSelected(val)}
-                onSelect={() => setbox2Cat(selected)}
-                data={data}
-                save="value"
-                dropdownStyles={{borderColor: '#dfd1b8', width: '50%'}}
-                boxStyles={{borderColor: '#dfd1b8', width: '50%'}}
-                inputStyles={{color: '#dfd1b8', right: 13}}
-                dropdownTextStyles={{color: 'pink'}}
-              />
-              </View>
+        <View
+          style={{
+            right: 5,
+            top: 120,
+            flexDirection: 'row',
+            position: 'absolute',
+          }}>
+          <View style={{right: -100, width: '50%'}}>
+            <TouchableOpacity
+              style={{
+                width: '75%',
+                height: 46,
+                backgroundColor: '#09172d',
+                borderRadius: 8,
+                borderColor:'#dfd1b8',
+                borderWidth:1
+              }}
+              onPress={()=>setOpenPickerC1(true)}
+              >
+              <Text style={{fontSize: 15, color: '#dfd1b8', alignSelf:'baseline', top:10, left:10}}>{dateQ}</Text>
+            </TouchableOpacity>
           </View>
+          <View>
+            <Modal
+              animationType={'slide'}
+              transparent={true}
+              visible={openPickerC1}
+              onRequestClose={() => setOpenPickerC1(false)}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: '#01223770',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    backgroundColor: '#dfd1b8',
+                    height: '50%',
+                    width: '90%',
+                    margin: 20,
+                    borderRadius: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      marginTop: 20,
+                      color: '#09172d',
+                      alignSelf: 'center',
+                    }}>
+                    Select location
+                  </Text>
+
+                  <ScrollView
+                    style={{width: '90%'}}
+                    showsVerticalScrollIndicator={false}>
+                    {items.map(i => {
+                      return (
+                        <TouchableOpacity
+                          key={i.label}
+                          onPress={() => {
+                            setDateQ(i.label);
+                            setOpenPickerC1(false);
+                          }}
+                          style={{flex: 1}}>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              marginTop: 10,
+                              color: '#09172d',
+                              alignSelf: 'center',
+                              fontWeight:
+                                dateQ == i.label ? 'bold' : 'normal',
+                            }}>
+                            {i.label}
+                          </Text>
+                          <View
+                            style={{
+                              height: 1,
+                              marginTop: 10,
+                              width: '100%',
+                              backgroundColor: '#09172d',
+                            }}
+                          />
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              </View>
+            </Modal>
+          </View>
+          <View style={{right: -100, width: '50%'}}>
+            <TouchableOpacity
+              style={{
+                width: '75%',
+                height: 46,
+                backgroundColor: '#09172d',
+                borderRadius: 8,
+                borderColor:'#dfd1b8',
+                borderWidth:1
+              }}
+              onPress={()=>setOpenPickerC2(true)}
+              >
+              <Text style={{fontSize: 15, color: '#dfd1b8', alignSelf:'baseline', top:10, left:10}}>{locationQ}</Text>
+            </TouchableOpacity>
+            <View>
+            <Modal
+              animationType={'slide'}
+              transparent={true}
+              visible={openPickerC2}
+              onRequestClose={() => setOpenPickerC2(false)}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: '#01223770',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    backgroundColor: '#dfd1b8',
+                    height: '50%',
+                    width: '90%',
+                    margin: 20,
+                    borderRadius: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      marginTop: 20,
+                      color: '#09172d',
+                      alignSelf: 'center',
+                    }}>
+                    Select location
+                  </Text>
+
+                  <ScrollView
+                    style={{width: '90%'}}
+                    showsVerticalScrollIndicator={false}>
+                    {items.map(i => {
+                      return (
+                        <TouchableOpacity
+                          key={i.label}
+                          onPress={() => {
+                            setLocaitonQ(i.label);
+                            setOpenPickerC2(false);
+                          }}
+                          style={{flex: 1}}>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              marginTop: 10,
+                              color: '#09172d',
+                              alignSelf: 'center',
+                              fontWeight:
+                                locationQ == i.label ? 'bold' : 'normal',
+                            }}>
+                            {i.label}
+                          </Text>
+                          <View
+                            style={{
+                              height: 1,
+                              marginTop: 10,
+                              width: '100%',
+                              backgroundColor: '#09172d',
+                            }}
+                          />
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              </View>
+            </Modal>
+          </View>
+          </View>
+        </View>
         <View
           style={{
             padding: 10,
@@ -419,9 +603,12 @@ export default function DonateCopy({navigation}) {
             borderRa={8}
             color="black"
             textC="#dfd1b8"
+            // onPress={() => {
+            //   finishp();
+            //   navigation.navigate('DonateCamera');
+            // }}
             onPress={() => {
-              finishp();
-              navigation.navigate('DonateCamera');
+              setOpenPickerC1(true);
             }}
             title={'Add Photos'}
           />

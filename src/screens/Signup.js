@@ -66,7 +66,7 @@ export default function SignUp({navigation}) {
           </View>
           <View style={{top:44, left: 5}}>
             <Buttons height={41} fontS={15} borderRa={8} color='#09172d' textC='#7e90ac' onPress={() => {
-                  navigation.navigate('Login');
+                  navigation.navigate('DonateCopy');
                 }} title={'Login'} />
           </View>
         </View>
