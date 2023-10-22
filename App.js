@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { Header } from '@react-navigation/stack';
+import Summary from './src/screens/Summary';
 
 
 const Stack = createNativeStackNavigator();
@@ -41,6 +42,8 @@ export default function App() {
         <Stack.Screen name="DonationFinish" component={DonationFinish} />
         <Stack.Screen name="DonateCamera" component={DonateCamera} />
         <Stack.Screen name="DonateCopy" component={DonateCopy} />
+        <Stack.Screen name="Summary" component={Summary} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
