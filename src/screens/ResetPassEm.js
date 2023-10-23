@@ -18,9 +18,8 @@ export default function ResetPassEm({navigation}) {
           </View>
          <View style={{width: "100%", alignItems:'center', justifyContent:'center', bottom:40}}>
             <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Email'} />
-            <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Code'} />
-            <Buttons height={41} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('SignUp')} title={'Verify'} />
-            <Buttons height={41} fontS={15} borderRa={8} color='#09172d' textC='#7e90ac' title={'Verify By Phone'} onPress={()=>navigation.navigate('ResetPassPh')}/>
+            <Buttons height={41} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('ResetPassPh')} title={'Submit'} />
+            <Buttons height={41} fontS={15} borderRa={8} color='#09172d' textC='#7e90ac' title={'Cancel'} onPress={()=>navigation.navigate('ResetPassPh')}/>
           </View>
         </View>
       </KeyboardAvoidingView>

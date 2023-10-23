@@ -16,12 +16,10 @@ export default function ResetPassEm({navigation}) {
             <Image style={{width:150, height:150}} source={{uri:"https://www.transparentpng.com/thumb/hurricane/through-the-eyes-of-hurricanes-png-0.png"}}/>
             <AuthHeader color='#dfd1b8' title={'Hurricane Help'}/>
           </View>
-         <View style={{width: "100%", alignItems:'center', justifyContent:'center', bottom:40}}>
-            <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Phone'} />
-            <TInput color='#dfd1b8' onChangeText={(text)=>{console.log(text)}} placer={'Code'} />
-            <Buttons height={41} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Login')} title={'Verify'} />
-            <Buttons height={41} fontS={15} borderRa={8} color='#09172d' textC='#7e90ac' title={'Verify By Email'} onPress={()=>navigation.navigate('ResetPassEm')}/>
-          </View>
+         <Text style={{color:'white', fontSize:18}}>Please check your email for futher instructions</Text>
+         <View style={{width:'75%', padding:10,left:40, top:10}}>
+         <Buttons height={41} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Login')} title={'Login'} />
+         </View>
         </View>
       </KeyboardAvoidingView>
     );

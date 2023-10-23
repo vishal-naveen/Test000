@@ -15,7 +15,10 @@ const database = firebase
   .database('https://hurricane-help-default-rtdb.firebaseio.com/')
 
 
-export default function DonationFinish({navigation}) {
+export default function DonationFinish({navigation, route}) {
+
+
+  const {Category1,Category2,Category3,DateQ, location, Quantity1,Quantity2,Quantity3} = route.params;
 
   const [date, setDate] = useState('')
 
@@ -68,16 +71,15 @@ export default function DonationFinish({navigation}) {
                 
             </View>
             <View style={{top:10, right:140, justifyContent:'space-between'}}>
-                <Text style={{color:'white', fontSize:15}}>Date:{date?.pickupD}</Text>
-                <Text style={{color:'white'}}>Time: {date?.pickupT}</Text>
-                <Text style={{color:'white'}}>Location</Text>
-                <Text style={{color:'white'}}>Items Scanned:</Text>
-
+                <Text style={{color:'white', fontSize:15}}>Date: {DateQ}</Text>
+                <Text style={{color:'white'}}>Location: {location}</Text>
+                <Text style={{color:'white'}}>Items and Quantity:</Text>
+                <Text style={{color:'white'}}>  -{Category1} : {Quantity1}</Text>
+                <Text style={{color:'white'}}>  -{Category2} : {Quantity2}</Text>
+                <Text style={{color:'white'}}>  -{Category3} : {Quantity3}</Text>
             </View>
-            <View style={{top:140, width:'100%', right:130}}>
-                <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Homeh')} title={'Send To Email'} />
-                <Text style={{color:'white', fontSize:18, left:8}}>--------------or--------------</Text>
-                <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Homeh')} title={'No Thank You'} />
+            <View style={{top:140, width:'100%', right:-60,top:160, position:'absolute'}}>
+                <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Homeh')} title={'Home'} />
             </View>
           </View>
         </View>
