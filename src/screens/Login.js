@@ -44,8 +44,8 @@ export default function Login({navigation}) {
     return (
       <KeyboardAvoidingView style={{backgroundColor:'#09172d'}}>
         <View style={{alignItems:'center', justifyContent:'center', height:"100%"}}>
-          <View style={{alignItems:'center', bottom:145}}>
-            <Image style={{width:150, height:150}} source={{uri:"https://www.transparentpng.com/thumb/hurricane/through-the-eyes-of-hurricanes-png-0.png"}}/>
+          <View style={{alignItems:'center', bottom:145,marginTop:50}}>
+            <Image style={{width:130, height:130,marginBottom:20}} source={{uri:"https://www.transparentpng.com/thumb/hurricane/through-the-eyes-of-hurricanes-png-0.png"}}/>
             <AuthHeader color='#dfd1b8' title={'Hurricane Help'}/>
           </View>
          <View style={{width: "100%", alignItems:'center', justifyContent:'center', bottom:90}}>
@@ -56,10 +56,7 @@ export default function Login({navigation}) {
             <Text style={{color:'white', fontSize:15}}>{loginError}</Text>
           </View>
           <View style={{}}>
-            <Text style={{fontSize:15, right:110, top:175, color:'white'}}>Don't have an account?</Text>
-          </View>
-          <View style={{top:144, left: 25}}>
-            <Buttons fontS={15} height={41} color='#09172d' textC='#7e90ac' onPress={()=>navigation.navigate('Homeh')} title={'Create Account'} />
+            <Text style={{fontSize:15, color:'white'}}>Don't have an account? <Text onPress={()=>navigation.navigate('Homeh')} style={{color:'#7e90ac'}}> Create Account</Text></Text>
           </View>
         </View>
       </KeyboardAvoidingView>

@@ -220,15 +220,16 @@ export default function DonateCopy({navigation}) {
 
   return (
     <KeyboardAvoidingView style={{backgroundColor: '#09172d'}}>
+    <View style={{alignItems: 'center', marginTop:30}}>
+            <Text style={{fontSize: 25, color: '#dfd1b8'}}>Add Donation Details</Text>
+          </View>
       <View
         style={{
           alignItems: 'center',
           justifyContent: 'center',
           height: '100%',
         }}>
-        <View style={{alignItems: 'center', bottom: 670, position: 'absolute'}}>
-          <AuthHeader color="#dfd1b8" title={'Donate'} />
-        </View>
+         
         <View
           style={{
             right: 5,
@@ -441,7 +442,7 @@ export default function DonateCopy({navigation}) {
             left: 15,
           }}>
           <View style={{right: -100, width: '50%'}}>
-            <View style={{right: 100, top: 95}}>
+            <View style={{right: 100, top: 95,marginRight:10}}>
               <TouchableOpacity
                 style={{
                   width: '95%',
@@ -913,7 +914,7 @@ export default function DonateCopy({navigation}) {
             </View>
           </View>
         ) : null}
-        <View style={{position: 'absolute', width: 200, left: 120, top: 610}}>
+        <View style={{position: 'absolute', width: 200,  top: 610,alignItems:"center"}}>
           <Buttons
             height={51}
             fontS={15}

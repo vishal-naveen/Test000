@@ -115,13 +115,13 @@ export default function Homedon({navigation}) {
         <View
           style={{
             alignItems: 'center',
-            justifyContent: 'center',
+            // justifyContent: 'center',
             height: '100%',
           }}>
-          <View style={{alignItems: 'center', bottom: 5}}>
+          <View style={{alignItems: 'center', marginTop:20}}>
             <Text style={{fontSize: 37, color: '#dfd1b8'}}>Hurrican Help</Text>
           </View>
-          <View style={{bottom: -15}}>
+          <View style={{marginTop:40}}>
             <Text
               style={{
                 fontSize: 40,
@@ -144,48 +144,48 @@ export default function Homedon({navigation}) {
           </View>
           <View style={{top:40}}>
           <View >
-            <Text style={{fontSize: 27, color: 'white', left:85, bottom: 0}} onPress={console.log(location5)}>
+            <Text style={{fontSize: 27, color: '#dfd1b8', left:85, bottom: 0}} onPress={console.log(location5)}>
               How you can help
             </Text>
-            <Text style={{fontSize: 17, color: 'white', left: 75, bottom: 0}}>
+            <Text style={{fontSize: 17, color: '#dfd1b8', left: 75, bottom: 0}}>
               Come to the food drives below
             </Text>
           </View>
-          <View style={{borderWidth:2, borderColor:'white', right:0, top:10, width:'95%'}}>
+          <View style={{borderWidth:2, borderColor:'#dfd1b8', right:0, top:10, width:'95%'}}>
             <View style={{flexDirection:'row'}}>
-              <Text style={{color:'white', borderColor:'white', borderWidth:0, padding:10}}>Date</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: 'white',left:50}}></Text>
-              <Text style={{left:17, color:'white', borderColor:'white', borderWidth:0, marginLeft:30, marginRight:220, padding:10}}>Location</Text>
+              <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>Date</Text>
+              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:50}}></Text>
+              <Text style={{left:17, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, marginRight:220, padding:10}}>Location</Text>
             </View>
-            <View style={{borderBottomColor:'white',height:1, borderBottomWidth:1}}></View>
+            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
             <View style={{flexDirection:'row'}}>
-            <Text style={{color:'white', borderColor:'white', borderWidth:0, padding:10}}>{date1}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: 'white',left:12}}></Text>
-              <Text style={{left:-17, color:'white', borderColor:'white', borderWidth:0, marginLeft:30, padding:10}}>{location1}</Text>
+            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date1}</Text>
+              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:12}}></Text>
+              <Text style={{left:-17, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location1}</Text>
             </View>
-            <View style={{borderBottomColor:'white',height:1, borderBottomWidth:1}}></View>
+            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
             <View style={{flexDirection:'row'}}>
-            <Text style={{color:'white', borderColor:'white', borderWidth:0, padding:10}}>{date2}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: 'white',left:4}}></Text>
-              <Text style={{left:-24, color:'white', borderColor:'white', borderWidth:0, marginLeft:30, padding:10}}>{location2}</Text>
+            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date2}</Text>
+              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:4}}></Text>
+              <Text style={{left:-24, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location2}</Text>
             </View>
-            <View style={{borderBottomColor:'white',height:1, borderBottomWidth:1}}></View>
+            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
             <View style={{flexDirection:'row'}}>
-            <Text style={{color:'white', borderColor:'white', borderWidth:0, padding:10}}>{date3}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: 'white',left:12}}></Text>
-              <Text style={{left:-16, color:'white', borderColor:'white', borderWidth:0, marginLeft:30, padding:10}}>{location3}</Text>
+            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date3}</Text>
+              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:12}}></Text>
+              <Text style={{left:-16, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location3}</Text>
             </View>
-            <View style={{borderBottomColor:'white',height:1, borderBottomWidth:1}}></View>
+            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
             <View style={{flexDirection:'row'}}>
-            <Text style={{color:'white', borderColor:'white', borderWidth:0, padding:10}}>{date4}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: 'white',left:4}}></Text>
-              <Text style={{left:-22, color:'white', borderColor:'white', borderWidth:0, marginLeft:30, padding:10}}>{location4}</Text>
+            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date4}</Text>
+              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:4}}></Text>
+              <Text style={{left:-22, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location4}</Text>
             </View>
-            <View style={{borderBottomColor:'white',height:1, borderBottomWidth:1}}></View>
+            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
             <View style={{flexDirection:'row'}}>
-            <Text style={{color:'white', borderColor:'white', borderWidth:0, padding:10}}>{date5}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: 'white',left:4}}></Text>
-              <Text style={{left:-22, color:'white', borderColor:'white', borderWidth:0, marginLeft:30, padding:10}}>{location5}</Text>
+            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date5}</Text>
+              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:4}}></Text>
+              <Text style={{left:-22, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location5}</Text>
             </View>
           </View>
           </View>
@@ -193,7 +193,7 @@ export default function Homedon({navigation}) {
             <Text style={{color: '#dfd1b8', fontSize: 30, left: 134}}>
               About Us
             </Text>
-            <Text style={{color: '#dfd1b8', fontSize: 17}}>
+            <Text style={{color: '#dfd1b8', fontSize: 16}}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation ullamco laboris

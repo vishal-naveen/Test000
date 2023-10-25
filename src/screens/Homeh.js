@@ -22,7 +22,7 @@ export default function Homeh({}) {
           <View style={{bottom:40}}>
             <Text style={{fontSize:40, color:'#7e90ac', fontWeight:'bold', textAlign:'center'}}>
              1,000 
-              <Text style={{fontSize:40, color:'#7e90ac', fontWeight:'normal', textAlign:'center'}}> packeges donated</Text>
+              <Text style={{fontSize:40, color:'#7e90ac', fontWeight:'normal', textAlign:'center'}}> packages donated</Text>
             </Text>
           </View>
           <View>
@@ -35,7 +35,7 @@ export default function Homeh({}) {
           </View>
           <View style={{bottom:-45, right:0}}>
             <Text style={{color:'#dfd1b8', fontSize:30, left:134}}>About Us</Text>
-            <Text style={{color:'#dfd1b8', fontSize:17, }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text>
+            <Text style={{color:'#dfd1b8', fontSize:17,paddingHorizontal:20 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text>
           </View>
           <View style={{width:'100%', top:65, left:50}}>
             <Buttons height={56} fontS={15} borderRa={8} color='black' textC='#7e90ac' title="View Summary" onPress={()=>navigation.navigate('Summary')}/>

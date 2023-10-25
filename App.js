@@ -15,10 +15,11 @@ import Homedon from './src/screens/Homedon';
 import openScreen from './src/screens/OpenScreen';
 import { useEffect } from 'react';
 
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Header } from '@react-navigation/stack';
 import Summary from './src/screens/Summary';
+import SplashScreen from './src/screens/SplashScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -26,7 +27,16 @@ const Stack = createNativeStackNavigator();
 // https://hurricane-help-default-rtdb.firebaseio.com
 
 export default function App() {
-  
+  const [isSplashLoading, setSplashLoading] = React.useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSplashLoading(false)
+    }, 2000);
+  }, [])
+
+  if (isSplashLoading)
+    return (<SplashScreen />)
   return (
     <NavigationContainer>
       <Stack.Navigator

@@ -8,10 +8,11 @@ export default function TInput(props) {
        <View
          style={{
            borderWidth: 1,
-           borderColor: 'black',
+           borderColor: '#dfd1b8',
            width: '80%',
            marginBottom: 20,
            borderRadius:10,
+           paddingLeft:10
          }}>
          <TextInput textAlign='left' placeholderTextColor={color} color={color} onChangeText={onChangeText} placeholder={placer} {...restProps} />
        </View>
