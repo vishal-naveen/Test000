@@ -56,7 +56,7 @@ export default function Login({navigation}) {
             <Text style={{color:'white', fontSize:15}}>{loginError}</Text>
           </View>
           <View style={{}}>
-            <Text style={{fontSize:15, color:'white'}}>Don't have an account? <Text onPress={()=>navigation.navigate('Homeh')} style={{color:'#7e90ac'}}> Create Account</Text></Text>
+            <Text style={{fontSize:15, color:'white'}}>Don't have an account? <Text onPress={()=>navigation.navigate('Signup')} style={{color:'#7e90ac'}}> Create Account</Text></Text>
           </View>
         </View>
       </KeyboardAvoidingView>

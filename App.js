@@ -20,9 +20,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Header } from '@react-navigation/stack';
 import Summary from './src/screens/Summary';
 import SplashScreen from './src/screens/SplashScreen';
-
-import {Platform, SafeAreaView} from 'react-native'
+import { Platform,SafeAreaView, UIManager } from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
+import SearchScreen from './src/screens/SearchScreen';
 const Stack = createNativeStackNavigator();
 
 // https://hurricane-help-default-rtdb.firebaseio.com
@@ -35,6 +35,11 @@ export default function App() {
     //   if(firebase.apps.length==0)
     //   await firebase.initializeApp({});
     // }
+    if (Platform.OS === 'android') {
+      if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+      }
+    }
     setTimeout(() => {
       setSplashLoading(false)
     }, 2000);
@@ -51,6 +56,7 @@ export default function App() {
         }}>
         <Stack.Screen name="OpenScreen" component={openScreen} />
         <Stack.Screen name="Homedon" component={Homedon} />
+        <Stack.Screen name="SearchScreen" component={SearchScreen} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={SignUp} />
 

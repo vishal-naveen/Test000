@@ -1,208 +1,225 @@
 /* eslint-disable prettier/prettier */
-import React,{useState} from 'react';
-import Buttons from '../components/Buttons'
-import { Text, View, KeyboardAvoidingView, ScrollView, Image, Alert, StyleSheet, Button } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import TInput from '../components/TInput';
-import AuthHeader from '../components/AuthHeader';
-import PasswordIn from '../components/PasswordIn'
+import React, {useEffect, useState} from 'react';
+import {
+  KeyboardAvoidingView,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
 import {firebase} from '@react-native-firebase/database';
-
-
+import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
 
 const database = firebase
   .app()
   .database('https://hurricane-help-default-rtdb.firebaseio.com/');
 
+export default function Homedon({}) {
+  const navigation = useNavigation();
 
+  const [locationList, setLocationList] = useState([]);
 
+  useEffect(() => {
+    try {
+      database
+        .ref('/HurricaneDatabase/SummaryDonation/')
+        .once('value')
+        .then(snapshot => {
+          let dataBaseData = snapshot.val();
 
-export default function Homedon({navigation}) {
+          if (dataBaseData) {
+            let futureDates = getFutureDates(dataBaseData);
 
-  const [location1, setLocation1] = useState('');
-  const [location2, setLocation2] = useState('');
-  const [location3, setLocation3] = useState('');
-  const [location4, setLocation4] = useState('');
-  const [location5, setLocation5] = useState('');
-  const [date1, setDate1] = useState('');
-  const [date2, setDate2] = useState('');
-  const [date3, setDate3] = useState('');
-  const [date4, setDate4] = useState('');
-  const [date5, setDate5] = useState('');
+            let arr = [];
+            futureDates?.length > 0 &&
+              futureDates?.splice(0, 5)?.map(item => {
+                dataBaseData?.[item] &&
+                  Object.keys(dataBaseData?.[item])?.map(locItem => {
+                    arr.push({
+                      date: item,
+                      location: locItem,
+                    });
+                  });
+              });
 
-  const [off, setOff] = useState(true);
+            arr =
+              arr?.length > 0
+                ? arr.sort(function (a, b) {
+                    var keyA = moment(a.date, 'MM-DD-YYYY HH:mm').toDate(),
+                      keyB = moment(b.date, 'MM-DD-YYYY HH:mm').toDate();
+                    // Compare the 2 dates
+                    if (keyA < keyB) return -1;
+                    if (keyA > keyB) return 1;
+                    return 0;
+                  })
+                : [];
 
+            setLocationList(arr?.splice(0, 5));
+          }
+        });
+    } catch (error) {}
+  }, []);
 
-  if (off == true){
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Location1')
-    .once('value')
-    .then(snapshot => {
-      setLocation1(snapshot.val())
-      console.log(location1)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Location2')
-    .once('value')
-    .then(snapshot => {
-      setLocation2(snapshot.val())
-      console.log(location2)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Location3')
-    .once('value')
-    .then(snapshot => {
-      setLocation3(snapshot.val())
-      console.log(location3)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Location4')
-    .once('value')
-    .then(snapshot => {
-      setLocation4(snapshot.val())
-      console.log(location4)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Location5')
-    .once('value')
-    .then(snapshot => {
-      setLocation5(snapshot.val())
-      console.log(location5)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Date1')
-    .once('value')
-    .then(snapshot => {
-      setDate1(snapshot.val())
-      console.log(date1)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Date2')
-    .once('value')
-    .then(snapshot => {
-      setDate2(snapshot.val())
-      console.log(date2)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Date3')
-    .once('value')
-    .then(snapshot => {
-      setDate3(snapshot.val())
-      console.log(date3)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Date4')
-    .once('value')
-    .then(snapshot => {
-      setDate4(snapshot.val())
-      console.log(date4)
-    });
-    database
-    .ref('/HurricaneDatabase/LocationForDrives/Date5')
-    .once('value')
-    .then(snapshot => {
-      setDate5(snapshot.val())
-      console.log(date5)
-    });
+  function getFutureDates(mainData = null, currentDate = moment().toDate()) {
+    var dateArray = new Array();
+    const list = mainData && Object.keys(mainData);
 
-    setOff(false)
+    while (list.length > 0) {
+      const date = list.shift();
+      if (moment(date, 'MM-DD-YYYY').toDate() > currentDate)
+        dateArray.push(date);
+    }
+    return dateArray;
   }
 
-    return (
-      <KeyboardAvoidingView style={{backgroundColor: '#09172d'}}>
-        <View
-          style={{
-            alignItems: 'center',
-            // justifyContent: 'center',
-            height: '100%',
-          }}>
-          <View style={{alignItems: 'center', marginTop:20}}>
-            <Text style={{fontSize: 37, color: '#dfd1b8'}}>Hurrican Help</Text>
-          </View>
-          <View style={{marginTop:40}}>
+  return (
+    <KeyboardAvoidingView style={{backgroundColor: '#09172d'}}>
+      <View
+        style={{
+          // alignItems: 'center',
+          // justifyContent: 'center',
+          height: '100%',
+          width: '100%',
+          paddingHorizontal: 16,
+          alignItems: 'center',
+        }}>
+        <View style={{alignItems: 'center', marginTop: 20}}>
+          <Text style={{fontSize: 37, color: '#dfd1b8'}}>Hurrican Help</Text>
+        </View>
+
+        <View style={{marginTop: 40}}>
+          <Text
+            style={{
+              fontSize: 40,
+              color: '#7e90ac',
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}>
+            1,000
             <Text
               style={{
                 fontSize: 40,
                 color: '#7e90ac',
-                fontWeight: 'bold',
+                fontWeight: 'normal',
                 textAlign: 'center',
               }}>
-              1,000
-              <Text
-                style={{
-                  fontSize: 40,
-                  color: '#7e90ac',
-                  fontWeight: 'normal',
-                  textAlign: 'center',
-                }}>
-                {' '}
-                packeges donated
-              </Text>
+              {' '}
+              packeges donated
             </Text>
-          </View>
-          <View style={{top:40}}>
-          <View >
-            <Text style={{fontSize: 27, color: '#dfd1b8', left:85, bottom: 0}} onPress={console.log(location5)}>
+          </Text>
+        </View>
+        <View style={{marginTop: 30, width: '100%'}}>
+          <View style={{alignItems: 'center'}}>
+            <Text
+              style={{fontSize: 27, color: '#dfd1b8'}}
+              onPress={()=>{}}>
               How you can help
             </Text>
-            <Text style={{fontSize: 17, color: '#dfd1b8', left: 75, bottom: 0}}>
+            <Text style={{fontSize: 17, color: '#dfd1b8'}}>
               Come to the food drives below
             </Text>
           </View>
-          <View style={{borderWidth:2, borderColor:'#dfd1b8', right:0, top:10, width:'95%'}}>
-            <View style={{flexDirection:'row'}}>
-              <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>Date</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:50}}></Text>
-              <Text style={{left:17, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, marginRight:220, padding:10}}>Location</Text>
+          <View style={styles.table}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('SearchScreen');
+              }}
+              style={{
+                right: 0,
+                top: -50,
+                position: 'absolute',
+                height: 50,
+                width: 60,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#dfd1b8',
+                borderTopLeftRadius: 12,
+                borderTopRightRadius: 12,
+                borderBottomWidth: 2,
+                borderColor: '#09172d',
+                zIndex: 1,
+              }}>
+              <Text style={{fontSize: 30, color: '#000'}}>
+                {' '}
+                &#x1F50E;&#xFE0E;
+              </Text>
+            </TouchableOpacity>
+            <View style={[styles.row, {backgroundColor: '#dfd1b8'}]}>
+              <Text style={[styles.cell, styles.heading]}>Date</Text>
+              <View style={styles.border} />
+              <Text style={[styles.cell, styles.heading]}>Location</Text>
             </View>
-            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
-            <View style={{flexDirection:'row'}}>
-            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date1}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:12}}></Text>
-              <Text style={{left:-17, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location1}</Text>
-            </View>
-            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
-            <View style={{flexDirection:'row'}}>
-            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date2}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:4}}></Text>
-              <Text style={{left:-24, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location2}</Text>
-            </View>
-            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
-            <View style={{flexDirection:'row'}}>
-            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date3}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:12}}></Text>
-              <Text style={{left:-16, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location3}</Text>
-            </View>
-            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
-            <View style={{flexDirection:'row'}}>
-            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date4}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:4}}></Text>
-              <Text style={{left:-22, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location4}</Text>
-            </View>
-            <View style={{borderBottomColor:'#dfd1b8',height:1, borderBottomWidth:1}}></View>
-            <View style={{flexDirection:'row'}}>
-            <Text style={{color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, padding:10}}>{date5}</Text>
-              <Text style={{height: '100%',width: 2,backgroundColor: '#dfd1b8',left:4}}></Text>
-              <Text style={{left:-22, color:'#dfd1b8', borderColor:'#dfd1b8', borderWidth:0, marginLeft:30, padding:10}}>{location5}</Text>
-            </View>
-          </View>
-          </View>
-          <View style={{bottom: -75, right: 0}}>
-            <Text style={{color: '#dfd1b8', fontSize: 30, left: 134}}>
-              About Us
-            </Text>
-            <Text style={{color: '#dfd1b8', fontSize: 16}}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. 
-            </Text>
+            <View style={styles.hBorder} />
+
+            {locationList?.map(item => {
+              return (
+                <>
+                  <View style={styles.row}>
+                    <Text style={styles.cell}>{item?.date}</Text>
+                    <View style={styles.border} />
+                    <Text style={[styles.cell]}>{item.location}</Text>
+                  </View>
+                  <View style={styles.hBorder} />
+                </>
+              );
+            })}
           </View>
         </View>
-      </KeyboardAvoidingView>
-    );
+        <View style={{width: '100%', alignItems: 'center'}}>
+          <Text style={{color: '#dfd1b8', fontSize: 30}}>About Us</Text>
+          <Text style={{color: '#dfd1b8', fontSize: 16, textAlign: 'center'}}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur.
+          </Text>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
+  );
 }
+
+const styles = StyleSheet.create({
+  parentView: {flex: 1, backgroundColor: '#09172d'},
+  table: {
+    borderWidth: 1,
+    borderColor: '#09172d',
+    marginBottom: 10,
+    marginTop: 70,
+    width: '100%',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderColor: '#09172d',
+    // borderWidth: 1,
+  },
+  cell: {
+    flex: 1,
+    padding: 10,
+    textAlign: 'center',
+    fontSize: 13,
+    color: '#09172d',
+    borderColor: '#09172d',
+  },
+  heading: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  hBorder: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#09172d',
+  },
+  border: {
+    width: 2,
+    height: '100%',
+    backgroundColor: '#09172d',
+  },
+});

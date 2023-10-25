@@ -1,32 +1,19 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect} from 'react';
-import Buttons from '../components/Buttons';
-import {
-  TextInput,
-  Text,
-  View,
-  KeyboardAvoidingView,
-  ScrollView,
-  Image,
-  Alert,
-  Button,
-  PermissionsAndroid,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import TInput from '../components/TInput';
-import AuthHeader from '../components/AuthHeader';
-import PasswordIn from '../components/PasswordIn';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import Buttons from '../components/Buttons';
 
-import {firebase} from '@react-native-firebase/database';
-import {formatPhoneNumberIntl} from 'react-phone-number-input';
-import {SelectList} from 'react-native-dropdown-select-list';
-import { ColorSpace } from 'react-native-reanimated';
+import { firebase } from '@react-native-firebase/database';
+import moment from 'moment';
 
 const database = firebase
   .app()
@@ -116,27 +103,43 @@ export default function DonateCopy({navigation}) {
 
   const [selected, setSelected] = React.useState('');
   const [items, setItems] = useState([
-    {label: 'Canned Foods', value: 'Canned Foods'},
-    {label: 'Baked Goods', value: 'Baked Goods'},
-    {label: 'Breakfast Items', value: 'Breakfast Items'},
-    {label: 'Snacks', value: 'Snacks'},
-    {label: 'Toiletries', value: 'Toiletries'},
-    {label: 'Other', value: 'Other'},
   ]);
   const [driveDate, setDriveDate] = useState([
-    {label: '11-02-2023', value: '11-2-2023'},
-    {label: '11-10-2023', value: '11-10-2023'},
-    {label: '12-08-2023', value: '12-8-2023'},
-    {label: '12-15-2023', value: '12-15-2023'},
-    {label: '12-29-2023', value: '12-29-2023'},
   ]);
   const [driveLocation, setDriveLocation] = useState([
-    {label: '3967 West Paxton Avenue', value: '3967 West Paxton Avenue'},
-    {label: '6001 N Nebraska Ave', value: '6001 N Nebraska Ave'},
-    {label: '1960 Twin Lakes Pkwy', value: '1960 Twin Lakes Pkwy'},
-    {label: '111 Yale St', value: '111 Yale St'},
-    {label: '450 10th St', value: '450 10th St'},
   ]);
+
+  useEffect(() => {
+    try {
+      database
+        .ref('/HurricaneDatabase/HardCodedData/')
+        .once('value')
+        .then(snapshot => {
+          let dataBaseData = snapshot.val();
+          if (dataBaseData) {
+            let futureDatesList = getFutureDates(dataBaseData.dates);
+            setDriveDate(futureDatesList)
+            setDriveLocation(dataBaseData.locations)
+            setItems(dataBaseData.categoryItems)
+          }
+        });
+    } catch (error) {
+    }
+  }, []);
+
+
+  function getFutureDates(list = [], currentDate = moment().toDate()) {
+    var dateArray = new Array();
+
+    while (list.length > 0) {
+      const date = list.shift();
+      // console.log("======>>>>>>", moment(date, 'MM-DD-YYYY').toDate() , moment().toDate() );
+
+      if (moment(date, 'MM-DD-YYYY HH:mm').toDate() > currentDate)
+        dateArray.push(date);
+    }
+    return dateArray;
+  }
 
   const showbox2 = () => {
     setBox2('1');
@@ -300,9 +303,9 @@ export default function DonateCopy({navigation}) {
                     {driveDate.map(i => {
                       return (
                         <TouchableOpacity
-                          key={i.label}
+                          key={i}
                           onPress={() => {
-                            setDateQ(i.label);
+                            setDateQ(i);
                             setOpenPickerC1(false);
                           }}
                           style={{flex: 1}}>
@@ -312,9 +315,9 @@ export default function DonateCopy({navigation}) {
                               marginTop: 10,
                               color: '#09172d',
                               alignSelf: 'center',
-                              fontWeight: dateQ == i.label ? 'bold' : 'normal',
+                              fontWeight: dateQ == i ? 'bold' : 'normal',
                             }}>
-                            {i.label}
+                            {i}
                           </Text>
                           <View
                             style={{
@@ -396,7 +399,7 @@ export default function DonateCopy({navigation}) {
                           <TouchableOpacity
                             key={i.label}
                             onPress={() => {
-                              setLocaitonQ(i.label);
+                              setLocaitonQ(i);
                               setOpenPickerC2(false);
                             }}
                             style={{flex: 1}}>
@@ -407,9 +410,9 @@ export default function DonateCopy({navigation}) {
                                 color: '#09172d',
                                 alignSelf: 'center',
                                 fontWeight:
-                                  locationQ == i.label ? 'bold' : 'normal',
+                                  locationQ == i ? 'bold' : 'normal',
                               }}>
-                              {i.label}
+                              {i}
                             </Text>
                             <View
                               style={{
@@ -505,9 +508,9 @@ export default function DonateCopy({navigation}) {
                       {items.map(i => {
                         return (
                           <TouchableOpacity
-                            key={i.label}
+                            key={i}
                             onPress={() => {
-                              setbox1Catt(i.label);
+                              setbox1Catt(i);
                               console.log(box1Q);
                               setOpenPickerCat1(false);
                             }}
@@ -519,9 +522,9 @@ export default function DonateCopy({navigation}) {
                                 color: '#09172d',
                                 alignSelf: 'center',
                                 fontWeight:
-                                  box1Catt == i.label ? 'bold' : 'normal',
+                                  box1Catt == i ? 'bold' : 'normal',
                               }}>
-                              {i.label}
+                              {i}
                             </Text>
                             <View
                               style={{
@@ -668,9 +671,9 @@ export default function DonateCopy({navigation}) {
                         {items.map(i => {
                           return (
                             <TouchableOpacity
-                              key={i.label}
+                              key={i}
                               onPress={() => {
-                                setbox2Catt(i.label);
+                                setbox2Catt(i);
                                 console.log(box2Q);
                                 setOpenPickerCat2(false);
                               }}
@@ -682,9 +685,9 @@ export default function DonateCopy({navigation}) {
                                   color: '#09172d',
                                   alignSelf: 'center',
                                   fontWeight:
-                                    box2Catt == i.label ? 'bold' : 'normal',
+                                    box2Catt == i ? 'bold' : 'normal',
                                 }}>
-                                {i.label}
+                                {i}
                               </Text>
                               <View
                                 style={{
@@ -830,9 +833,9 @@ export default function DonateCopy({navigation}) {
                         {items.map(i => {
                           return (
                             <TouchableOpacity
-                              key={i.label}
+                              key={i}
                               onPress={() => {
-                                setbox3Catt(i.label);
+                                setbox3Catt(i);
                                 console.log(box3Q);
                                 setOpenPickerCat3(false);
                               }}
@@ -844,9 +847,9 @@ export default function DonateCopy({navigation}) {
                                   color: '#09172d',
                                   alignSelf: 'center',
                                   fontWeight:
-                                    box3Catt == i.label ? 'bold' : 'normal',
+                                    box3Catt == i ? 'bold' : 'normal',
                                 }}>
-                                {i.label}
+                                {i}
                               </Text>
                               <View
                                 style={{

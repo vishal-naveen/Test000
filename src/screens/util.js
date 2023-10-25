@@ -54,4 +54,13 @@ Colors.random = function() {
     return result;
 };
 
+
+// database
+// .ref('/HurricaneDatabase/HardCodedData')
+//     .update({
+//      dates:["10-24-2023 12:30", "10-23-2023 10:30","10-21-2023 18:30","10-20-2023 09:30", "10-22-2023 17:30","11-01-2023 18:30","11-02-2023 10:30","11-02-2023 11:00" ],
+//      locations:["3967 West Paxton Avenue","6001 N Nebraska Ave","1960 Twin Lakes Pkwy","111 Yale St","450 10th St", ]
+//     })
+//     .then(() => console.log('Data set. 1'));
+
 export default Colors

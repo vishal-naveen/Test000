@@ -4,7 +4,7 @@ import Buttons from '../components/Buttons';
 import {
   Text,
   View,
-  KeyboardAvoidingView,
+  LayoutAnimation,
   ScrollView,
   Image,
   Alert,
@@ -51,7 +51,7 @@ export default function Summary() {
   const [xValues, setXvalues] = useState([]);
   const [yValues, setYvalues] = useState([]);
 
-  const [mainData, setMainData] = useState([]);
+  const [mainData, setMainData] = useState({});
   const [top5List, settop5List] = useState([]);
 
   const refBar = useRef();
@@ -69,7 +69,6 @@ export default function Summary() {
         .ref('/HurricaneDatabase/SummaryDonation/')
         .once('value')
         .then(snapshot => {
-
           let dataBaseData = snapshot.val();
           //   console.log("==>>>",dataBaseData);
 
@@ -127,12 +126,10 @@ export default function Summary() {
             setYvalues(yValues);
           }
           setLoader(false);
-
         });
     } catch (error) {
-        setLoader(false);
-
-    } 
+      setLoader(false);
+    }
   }, []);
 
   try {
@@ -147,7 +144,7 @@ export default function Summary() {
       const date = list.shift();
       // console.log("======>>>>>>", moment(date, 'MM-DD-YYYY').toDate() , moment().toDate() );
 
-      if (moment(date, 'MM-DD-YYYY').toDate() > currentDate)
+      if (moment(date, 'MM-DD-YYYY HH:mm').toDate() < currentDate)
         dateArray.push(date);
     }
     return dateArray;
@@ -159,6 +156,7 @@ export default function Summary() {
       totalCount += +i.count;
     });
     console.log('*******************', totalCount);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setTotalCountData(totalCount);
     setPieData(
       pieDataResponse.map(i => {
@@ -170,37 +168,36 @@ export default function Summary() {
   // console.log("-=-=-", pieData)
 
   const locationData = mainData?.[date]?.[location];
-if(loader)
-  return(
-    <>
-      
-
+  if (loader)
+    return (
+      <>
         <View
           style={[
-            styles.parentView
-            ,{
-            position: 'absolute',
-            left: 0,
-            bottom: 0,
-            top: 0,
-            right: 0,
-            alignItems: 'center',
-            justifyContent: 'center',
-            flex:1
-          }]}>
+            styles.parentView,
+            {
+              position: 'absolute',
+              left: 0,
+              bottom: 0,
+              top: 0,
+              right: 0,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+            },
+          ]}>
           <ActivityIndicator size="large" color="white" />
         </View>
         <Text
-            style={{
-              fontSize: 32,
-              marginTop: 20,
-              color: '#dfd1b8',
-              alignSelf: 'center',
-            }}>
-            Dashboard Summary
-          </Text>
-        </>
-  )
+          style={{
+            fontSize: 32,
+            marginTop: 20,
+            color: '#dfd1b8',
+            alignSelf: 'center',
+          }}>
+          Dashboard Summary
+        </Text>
+      </>
+    );
 
   return (
     <SafeAreaView style={styles.parentView}>
@@ -224,14 +221,15 @@ if(loader)
                 setOpenDatePicker(true);
               }}
               style={{
-                padding: 10,
+                padding: 12,
                 margin: 10,
-                marginTop: 50,
+                marginTop: 30,
                 borderColor: '#dfd1b8',
                 borderWidth: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'row',
+                borderRadius:8
               }}>
               <Text
                 style={{fontSize: 15, color: '#dfd1b8', alignSelf: 'center'}}>
@@ -252,18 +250,20 @@ if(loader)
               <>
                 <TouchableOpacity
                   onPress={() => {
-                    const lList =mainData?.[date] && Object.keys(mainData?.[date]);
+                    const lList =
+                      mainData?.[date] && Object.keys(mainData?.[date]);
                     setItems([...lList]);
                     setOpenLocationPicker(true);
                   }}
                   style={{
-                    padding: 10,
+                    padding: 12,
                     margin: 10,
                     borderColor: '#dfd1b8',
                     borderWidth: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexDirection: 'row',
+                    borderRadius:8
                   }}>
                   <Text
                     style={{
@@ -329,8 +329,11 @@ if(loader)
                   <TouchableOpacity
                     onPress={() => {
                       setDate(null);
-                      setLocation('');
+                      LayoutAnimation.configureNext(
+                        LayoutAnimation.Presets.easeInEaseOut,
+                      );
                       calculatePercentage([]);
+                      setLocation('');
                     }}
                     style={{
                       marginLeft: 10,
@@ -417,7 +420,7 @@ if(loader)
                 </View>
               </View>
             )}
-            {!!location&& totalCountData != 0 ? (
+            {!!location && totalCountData != 0 ? (
               <View style={{flex: 1, alignItems: 'center'}}>
                 <View style={styles.table}>
                   <View style={[styles.row, {backgroundColor: '#dfd1b8'}]}>
@@ -450,7 +453,7 @@ if(loader)
                 </View>
               </View>
             ) : xValues.length > 0 && yValues.length > 0 ? (
-              <View style={{alignItems:"center"}}>
+              <View style={{alignItems: 'center'}}>
                 <Text
                   style={{
                     fontSize: 20,
@@ -526,7 +529,6 @@ if(loader)
             )}
           </View>
 
-
           <Modal
             animationType={'slide'}
             transparent={true}
@@ -547,44 +549,61 @@ if(loader)
                   backgroundColor: '#dfd1b8',
                   maxHeight: '70%',
                   width: '90%',
-                  margin: 20,
+                  margin: 10,
                   borderRadius: 20,
                   justifyContent: 'center',
                   alignItems: 'center',
+                  paddingBottom: 20,
                 }}>
                 <Text
                   style={{
-                    fontSize: 30,
-                    marginTop: 20,
+                    fontSize: 20,
+                    marginTop: 10,
                     color: '#09172d',
                     alignSelf: 'center',
+                    fontWeight: 'bold',
                   }}>
-                  Select location
+                  Select Date
                 </Text>
 
+                {items.length == 0 && (
+                  <>
+                    <View
+                      style={{
+                        height: 1,
+                        marginTop: 10,
+                        width: '100%',
+                        backgroundColor: '#09172d',
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        marginVertical: 50,
+                        color: '#09172d',
+                        alignSelf: 'center',
+                        fontWeight: 'normal',
+                      }}>
+                      Sorry, No location found
+                    </Text>
+                  </>
+                )}
+
                 <ScrollView
-                  style={{width: '90%'}}
+                  style={{width: '100%'}}
                   showsVerticalScrollIndicator={false}>
                   {items.map(i => {
                     return (
                       <TouchableOpacity
                         key={i}
                         onPress={() => {
-                          setDate(i);
-                          setLocation('')
                           setOpenDatePicker(false);
+                          setDate(i);
+                          setLocation('');
+                          setTotalCountData(0);
+                          setPieData([]);
                         }}
                         style={{flex: 1}}>
-                        <Text
-                          style={{
-                            fontSize: 20,
-                            marginTop: 10,
-                            color: '#09172d',
-                            alignSelf: 'center',
-                            fontWeight: location == i ? 'bold' : 'normal',
-                          }}>
-                          {i}
-                        </Text>
                         <View
                           style={{
                             height: 1,
@@ -593,6 +612,16 @@ if(loader)
                             backgroundColor: '#09172d',
                           }}
                         />
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            marginTop: 10,
+                            color: '#09172d',
+                            alignSelf: 'center',
+                            fontWeight: date == i ? 'bold' : 'normal',
+                          }}>
+                          {i}
+                        </Text>
                       </TouchableOpacity>
                     );
                   })}
@@ -621,23 +650,24 @@ if(loader)
                   backgroundColor: '#dfd1b8',
                   maxHeight: '70%',
                   width: '90%',
-                  margin: 20,
                   borderRadius: 20,
                   justifyContent: 'center',
                   alignItems: 'center',
+                  paddingBottom: 20,
                 }}>
                 <Text
                   style={{
-                    fontSize: 30,
-                    marginTop: 20,
+                    fontSize: 20,
+                    marginTop: 10,
                     color: '#09172d',
                     alignSelf: 'center',
+                    fontWeight: 'bold',
                   }}>
                   Select location
                 </Text>
 
                 <ScrollView
-                  style={{width: '90%'}}
+                  style={{width: '100%'}}
                   showsVerticalScrollIndicator={false}>
                   {items.map(i => {
                     return (
@@ -648,16 +678,6 @@ if(loader)
                           setOpenLocationPicker(false);
                         }}
                         style={{flex: 1}}>
-                        <Text
-                          style={{
-                            fontSize: 20,
-                            marginTop: 10,
-                            color: '#09172d',
-                            alignSelf: 'center',
-                            fontWeight: location == i ? 'bold' : 'normal',
-                          }}>
-                          {i}
-                        </Text>
                         <View
                           style={{
                             height: 1,
@@ -666,6 +686,16 @@ if(loader)
                             backgroundColor: '#09172d',
                           }}
                         />
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            marginTop: 10,
+                            color: '#09172d',
+                            alignSelf: 'center',
+                            fontWeight: location == i ? 'bold' : 'normal',
+                          }}>
+                          {i}
+                        </Text>
                       </TouchableOpacity>
                     );
                   })}
@@ -674,8 +704,6 @@ if(loader)
             </View>
           </Modal>
         </View>
-
- 
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
