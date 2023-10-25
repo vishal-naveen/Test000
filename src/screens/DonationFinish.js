@@ -21,6 +21,12 @@ export default function DonationFinish({navigation, route}) {
   const {Category1,Category2,Category3,DateQ, location, Quantity1,Quantity2,Quantity3} = route.params;
 
   const [date, setDate] = useState('')
+  const [category1a, setCategory1a] = useState('')
+  const [category2a, setCategory2a] = useState('')
+  const [category3a, setCategory3a] = useState('')
+
+
+
 
   useEffect(() => {
     database.ref("/HurricaneDatabase/Donater/").once('value')
@@ -74,9 +80,9 @@ export default function DonationFinish({navigation, route}) {
                 <Text style={{color:'white', fontSize:15}}>Date: {DateQ}</Text>
                 <Text style={{color:'white'}}>Location: {location}</Text>
                 <Text style={{color:'white'}}>Items and Quantity:</Text>
-                <Text style={{color:'white'}}>  -{Category1} : {Quantity1}</Text>
-                <Text style={{color:'white'}}>  -{Category2} : {Quantity2}</Text>
-                <Text style={{color:'white'}}>  -{Category3} : {Quantity3}</Text>
+                {Category1.length>0 && Quantity1.length>0 ? (<Text style={{color:'white'}}>  -{Category1} : {Quantity1}</Text>) : null}
+                {Category2.length>0 && Quantity2.length>0 ? (<Text style={{color:'white'}}>  -{Category2} : {Quantity2}</Text>) : null}
+                {Category3.length>0 && Quantity3.length>0 ? (<Text style={{color:'white'}}>  -{Category3} : {Quantity3}</Text>) : null}
             </View>
             <View style={{top:140, width:'100%', right:-60,top:160, position:'absolute'}}>
                 <Buttons height={51} fontS={15} borderRa={8} color='black' textC='#dfd1b8' onPress={()=>navigation.navigate('Homeh')} title={'Home'} />
