@@ -21,15 +21,20 @@ import { Header } from '@react-navigation/stack';
 import Summary from './src/screens/Summary';
 import SplashScreen from './src/screens/SplashScreen';
 
-
+import {Platform, SafeAreaView} from 'react-native'
+import { firebase } from '@react-native-firebase/auth';
 const Stack = createNativeStackNavigator();
 
 // https://hurricane-help-default-rtdb.firebaseio.com
 
 export default function App() {
   const [isSplashLoading, setSplashLoading] = React.useState(true)
-
   useEffect(() => {
+    // if(Platform.OS=="ios" ){
+    //   console.log("===",firebase.apps)
+    //   if(firebase.apps.length==0)
+    //   await firebase.initializeApp({});
+    // }
     setTimeout(() => {
       setSplashLoading(false)
     }, 2000);
@@ -38,6 +43,7 @@ export default function App() {
   if (isSplashLoading)
     return (<SplashScreen />)
   return (
+    <SafeAreaView style={{flex:1}}>
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
@@ -61,5 +67,6 @@ export default function App() {
         <Stack.Screen name="Summary" component={Summary} />
       </Stack.Navigator>
     </NavigationContainer>
+    </SafeAreaView>
   );
 };

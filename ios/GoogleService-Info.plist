@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCa5Ic5ROZoErrDJAJMsdZ8-kZOBIKRLVE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>84642569600</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.hurricane.help</string>
+	<key>PROJECT_ID</key>
+	<string>hurricane-help</string>
+	<key>STORAGE_BUCKET</key>
+	<string>hurricane-help.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:84642569600:ios:2138e8bfa88d1ec051f565</string>
+	<key>DATABASE_URL</key>
+	<string>https://hurricane-help-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
