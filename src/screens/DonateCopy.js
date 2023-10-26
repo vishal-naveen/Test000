@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   KeyboardAvoidingView,
   Modal,
@@ -8,12 +8,13 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import Buttons from '../components/Buttons';
 
-import { firebase } from '@react-native-firebase/database';
+import {firebase} from '@react-native-firebase/database';
 import moment from 'moment';
+import { getDate, getEndTime, getSortedDateList, getStartTime } from './util';
 
 const database = firebase
   .app()
@@ -25,8 +26,6 @@ database
   .then(snapshot => {
     console.log('User data: ', snapshot.val());
   });
-
-
 
 export default function DonateCopy({navigation}) {
   const [cameraPhoto, setCameraPhoto] = useState();
@@ -102,12 +101,9 @@ export default function DonateCopy({navigation}) {
   };
 
   const [selected, setSelected] = React.useState('');
-  const [items, setItems] = useState([
-  ]);
-  const [driveDate, setDriveDate] = useState([
-  ]);
-  const [driveLocation, setDriveLocation] = useState([
-  ]);
+  const [items, setItems] = useState([]);
+  const [driveDate, setDriveDate] = useState([]);
+  const [driveLocation, setDriveLocation] = useState([]);
 
   useEffect(() => {
     try {
@@ -117,25 +113,30 @@ export default function DonateCopy({navigation}) {
         .then(snapshot => {
           let dataBaseData = snapshot.val();
           if (dataBaseData) {
-            let futureDatesList = getFutureDates(dataBaseData.dates);
-            setDriveDate(futureDatesList)
-            setDriveLocation(dataBaseData.locations)
-            setItems(dataBaseData.categoryItems)
+            let futureDates = getFutureDates(dataBaseData.dates);
+            const mySet1 = new Set();
+            futureDates?.map(item => {
+              mySet1.add(item);
+            });
+
+            setDriveDate(getSortedDateList([...mySet1]));
+            setDriveLocation(dataBaseData.locations);
+            setItems(dataBaseData.categoryItems);
           }
         });
-    } catch (error) {
-    }
+    } catch (error) {}
   }, []);
 
-
-  function getFutureDates(list = [], currentDate = moment().toDate()) {
+  function getFutureDates(list = []) {
     var dateArray = new Array();
-
+    const currentDate = moment(
+      moment().format('MM-DD-YYYY'),
+      'MM-DD-YYYY',
+    ).toDate();
     while (list.length > 0) {
       const date = list.shift();
       // console.log("======>>>>>>", moment(date, 'MM-DD-YYYY').toDate() , moment().toDate() );
-
-      if (moment(date, 'MM-DD-YYYY HH:mm').toDate() > currentDate)
+      if (moment(date, 'MM-DD-YYYY').toDate() >= currentDate)
         dateArray.push(date);
     }
     return dateArray;
@@ -173,24 +174,24 @@ export default function DonateCopy({navigation}) {
     //   })
     //   .then(() => console.log('Data set. 1'));
 
-      database
-        .ref('/HurricaneDatabase/SummaryDonation/' + date + '/' + location)
-        .once('value')
-        .then(snapshot => {
-          const dataBaseData = snapshot.val();
-          const box1TotalQuantity = dataBaseData?.[box1c] ?? 0;
-          const box2TotalQuantity = dataBaseData?.[box2c] ?? 0;
-          const box3TotalQuantity = dataBaseData?.[box2c] ?? 0;
+    database
+      .ref('/HurricaneDatabase/SummaryDonation/' + date + '/' + location)
+      .once('value')
+      .then(snapshot => {
+        const dataBaseData = snapshot.val();
+        const box1TotalQuantity = dataBaseData?.[box1c] ?? 0;
+        const box2TotalQuantity = dataBaseData?.[box2c] ?? 0;
+        const box3TotalQuantity = dataBaseData?.[box2c] ?? 0;
 
-      database
-        .ref('/HurricaneDatabase/SummaryDonation/' + date + '/' + location)
-            .update({
-              ...(box1c.length > 0 && {[box1c]: +box1TotalQuantity + +box1q}),
-              ...(box2c.length > 0 && {[box2c]: +box2TotalQuantity + +box2q}),
-              ...(box3c.length > 0 && {[box3c]: +box3TotalQuantity + +box3q}),
-            })
-            .then(() => console.log('Data set. 1'));
-        });
+        database
+          .ref('/HurricaneDatabase/SummaryDonation/' + date + '/' + location)
+          .update({
+            ...(box1c.length > 0 && {[box1c]: +box1TotalQuantity + +box1q}),
+            ...(box2c.length > 0 && {[box2c]: +box2TotalQuantity + +box2q}),
+            ...(box3c.length > 0 && {[box3c]: +box3TotalQuantity + +box3q}),
+          })
+          .then(() => console.log('Data set. 1'));
+      });
   }
 
   function box1up(Category12) {
@@ -223,16 +224,17 @@ export default function DonateCopy({navigation}) {
 
   return (
     <KeyboardAvoidingView style={{backgroundColor: '#09172d'}}>
-    <View style={{alignItems: 'center', marginTop:30}}>
-            <Text style={{fontSize: 25, color: '#dfd1b8'}}>Add Donation Details</Text>
-          </View>
+      <View style={{alignItems: 'center', marginTop: 30}}>
+        <Text style={{fontSize: 25, color: '#dfd1b8'}}>
+          Add Donation Details
+        </Text>
+      </View>
       <View
         style={{
           alignItems: 'center',
           justifyContent: 'center',
           height: '100%',
         }}>
-         
         <View
           style={{
             right: 5,
@@ -290,7 +292,7 @@ export default function DonateCopy({navigation}) {
                   <Text
                     style={{
                       fontSize: 30,
-                      marginTop: 20,
+                      marginVertical: 20,
                       color: '#09172d',
                       alignSelf: 'center',
                     }}>
@@ -299,35 +301,47 @@ export default function DonateCopy({navigation}) {
 
                   <ScrollView
                     style={{width: '90%'}}
+                    contentContainerStyle={{paddingBottom:16}}
                     showsVerticalScrollIndicator={false}>
                     {driveDate.map(i => {
                       return (
+                        <View key={i+""}>
+                               <View
+                            style={{
+                              height: 1,
+                              marginBottom:10,
+                              width: '100%',
+                              backgroundColor: '#09172d',
+                            }}
+                          />
                         <TouchableOpacity
                           key={i}
                           onPress={() => {
                             setDateQ(i);
                             setOpenPickerC1(false);
                           }}
-                          style={{flex: 1}}>
+                          style={{flex: 1,marginBottom:10}}>
                           <Text
                             style={{
-                              fontSize: 20,
-                              marginTop: 10,
+                              fontSize: 15,
                               color: '#09172d',
                               alignSelf: 'center',
                               fontWeight: dateQ == i ? 'bold' : 'normal',
                             }}>
-                            {i}
+                            {getDate(i)}
                           </Text>
-                          <View
+                          <Text
                             style={{
-                              height: 1,
-                              marginTop: 10,
-                              width: '100%',
-                              backgroundColor: '#09172d',
-                            }}
-                          />
+                              fontSize: 12,
+                              color: '#09172d',
+                              alignSelf: 'center',
+                              fontWeight: dateQ == i ? 'bold' : 'normal',
+                            }}>
+                            Start Time : {getStartTime(i)+'\n'}  End Time : {getEndTime(i)}
+                          </Text>
+                     
                         </TouchableOpacity>
+                        </View>
                       );
                     })}
                   </ScrollView>
@@ -409,8 +423,7 @@ export default function DonateCopy({navigation}) {
                                 marginTop: 10,
                                 color: '#09172d',
                                 alignSelf: 'center',
-                                fontWeight:
-                                  locationQ == i ? 'bold' : 'normal',
+                                fontWeight: locationQ == i ? 'bold' : 'normal',
                               }}>
                               {i}
                             </Text>
@@ -445,7 +458,7 @@ export default function DonateCopy({navigation}) {
             left: 15,
           }}>
           <View style={{right: -100, width: '50%'}}>
-            <View style={{right: 100, top: 95,marginRight:10}}>
+            <View style={{right: 100, top: 95, marginRight: 10}}>
               <TouchableOpacity
                 style={{
                   width: '95%',
@@ -464,7 +477,7 @@ export default function DonateCopy({navigation}) {
                     top: 10,
                     left: 10,
                   }}>
-                  {box1Catt.length>0?box1Catt:"Quantity"}
+                  {box1Catt.length > 0 ? box1Catt : 'Quantity'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -521,8 +534,7 @@ export default function DonateCopy({navigation}) {
                                 marginTop: 10,
                                 color: '#09172d',
                                 alignSelf: 'center',
-                                fontWeight:
-                                  box1Catt == i ? 'bold' : 'normal',
+                                fontWeight: box1Catt == i ? 'bold' : 'normal',
                               }}>
                               {i}
                             </Text>
@@ -627,7 +639,7 @@ export default function DonateCopy({navigation}) {
                       top: 10,
                       left: 10,
                     }}>
-                    {box2Catt.length>0?box2Catt:"Quantity"}
+                    {box2Catt.length > 0 ? box2Catt : 'Quantity'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -684,8 +696,7 @@ export default function DonateCopy({navigation}) {
                                   marginTop: 10,
                                   color: '#09172d',
                                   alignSelf: 'center',
-                                  fontWeight:
-                                    box2Catt == i ? 'bold' : 'normal',
+                                  fontWeight: box2Catt == i ? 'bold' : 'normal',
                                 }}>
                                 {i}
                               </Text>
@@ -789,7 +800,7 @@ export default function DonateCopy({navigation}) {
                       top: 10,
                       left: 10,
                     }}>
-                    {box3Catt.length>0?box3Catt:"Quantity"}
+                    {box3Catt.length > 0 ? box3Catt : 'Quantity'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -846,8 +857,7 @@ export default function DonateCopy({navigation}) {
                                   marginTop: 10,
                                   color: '#09172d',
                                   alignSelf: 'center',
-                                  fontWeight:
-                                    box3Catt == i ? 'bold' : 'normal',
+                                  fontWeight: box3Catt == i ? 'bold' : 'normal',
                                 }}>
                                 {i}
                               </Text>
@@ -917,7 +927,13 @@ export default function DonateCopy({navigation}) {
             </View>
           </View>
         ) : null}
-        <View style={{position: 'absolute', width: 200,  top: 610,alignItems:"center"}}>
+        <View
+          style={{
+            position: 'absolute',
+            width: 200,
+            top: 610,
+            alignItems: 'center',
+          }}>
           <Buttons
             height={51}
             fontS={15}
@@ -949,7 +965,18 @@ export default function DonateCopy({navigation}) {
               borderRa={8}
               color="black"
               textC="#dfd1b8"
-              onPress={() => navigation.navigate('DonationFinish', {Quantity3:box3Q,Quantity2:box2Q,Quantity1:box1Q,location:locationQ,DateQ:dateQ,Category1: box1Catt,Category2: box2Catt,Category3: box3Catt})}
+              onPress={() =>
+                navigation.navigate('DonationFinish', {
+                  Quantity3: box3Q,
+                  Quantity2: box2Q,
+                  Quantity1: box1Q,
+                  location: locationQ,
+                  DateQ: dateQ,
+                  Category1: box1Catt,
+                  Category2: box2Catt,
+                  Category3: box3Catt,
+                })
+              }
               onPressIn={() =>
                 finishp(
                   dateQ,

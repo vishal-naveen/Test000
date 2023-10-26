@@ -1,34 +1,26 @@
 /* eslint-disable prettier/prettier */
-import React, {useEffect, useRef, useState} from 'react';
-import Buttons from '../components/Buttons';
-import {
-  Text,
-  View,
-  LayoutAnimation,
-  ScrollView,
-  Image,
-  Alert,
-  StyleSheet,
-  Button,
-  SafeAreaView,
-  TouchableOpacity,
-  Modal,
-  ActivityIndicator,
-} from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import TInput from '../components/TInput';
-import AuthHeader from '../components/AuthHeader';
-import PasswordIn from '../components/PasswordIn';
-import RNPickerSelect from 'react-native-picker-select';
-import {useNavigation} from '@react-navigation/native';
-import DatePicker from 'react-native-date-picker';
-import DropDownPicker from 'react-native-dropdown-picker';
-import PieChart from 'react-native-pie-chart';
-import BarChartScreen from '../components/BarChart';
-import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {firebase} from '@react-native-firebase/database';
+import { firebase } from '@react-native-firebase/database';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import Colors from './util';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  LayoutAnimation,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import PieChart from 'react-native-pie-chart';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
+import BarChartScreen from '../components/BarChart';
+import Colors, { getDate, getSortedDateList } from './util';
 
 const database = firebase
   .app()
@@ -38,13 +30,17 @@ export default function Summary() {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
 
-  const [date, setDate] = useState(null);
-  const [open, setOpen] = useState(false);
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [openLocationPicker, setOpenLocationPicker] = useState(false);
 
+  const [date, setDate] = useState(null);
+  const [dateList, setdateList] = useState([]);
+
   const [location, setLocation] = useState('');
-  const [items, setItems] = useState([]);
+  const [locationList, setLocationList] = useState([]);
+
+  const [availableLocationsData, setAvailableLocationsData] = useState({});
+
   const [totalCountData, setTotalCountData] = useState(0);
   const widthAndHeight = 250;
   const [pieData, setPieData] = useState([]);
@@ -77,51 +73,60 @@ export default function Summary() {
 
             let pastDatesList = getPastDates(dataBaseData);
 
-            let arr = [];
+            let locationArr = {};
+            const mySet1 = new Set();
+            Object.keys(dataBaseData)?.map(item => {
+              // console.log(dataBaseData?.[item]);
+              mySet1.add(getDate(item));
+            });
+
+            setdateList(getSortedDateList([...mySet1]));
+
             pastDatesList?.length > 0 &&
               pastDatesList?.map(item => {
                 // console.log(dataBaseData?.[item]);
-
                 dataBaseData?.[item] &&
                   Object.keys(dataBaseData?.[item])?.map(locItem => {
                     const categoryList = dataBaseData?.[item]?.[locItem];
-                    let totalCount = 0;
+                    // let totalCount = 0;
                     categoryList &&
                       Object.keys(categoryList)?.map(catItem => {
-                        totalCount = +totalCount + +categoryList[catItem];
-                        // categoryList.totalCount = totalCount;
+                        locationArr[locItem] =
+                          (locationArr[locItem] ?? 0) + +categoryList[catItem];
                       });
-                    arr.push({
-                      totalCount,
-                      date: item,
-                      location: locItem,
-                    });
                   });
               });
 
-            arr =
-              arr?.length > 0
-                ? arr.sort(function (a, b) {
-                    var keyA = a.totalCount,
-                      keyB = b.totalCount;
-                    // Compare the 2 dates
-                    if (keyA > keyB) return -1;
-                    if (keyA < keyB) return 1;
-                    return 0;
-                  })
-                : [];
+            const sortable = [];
+            for (const key in locationArr) {
+              sortable.push({[key]: locationArr[key]});
+            }
+
+            sortable.sort(function (a, b) {
+              if (!a || !b) return 0;
+              return b[Object.keys(b)?.[0]] - a[Object.keys(a)?.[0]];
+            });
 
             const xValues = [];
             const yValues = [];
-            const top5 = arr?.slice(0, 5);
-            settop5List(top5);
-            top5?.map(item => {
-              xValues.push(item?.date);
-              yValues.push(item?.totalCount);
+            // console.log('===>>>', sortable);
+
+            const top5 = [];
+
+            sortable?.slice(0, 5)?.map(item => {
+              if (item) {
+                const loc = Object.keys(item)?.[0] ?? '';
+                yValues.push(item?.[loc]);
+                xValues.push("");
+
+                top5.push({
+                  location: loc,
+                  totalCount: item?.[loc],
+                });
+              }
             });
 
-            console.log(xValues);
-            console.log(yValues);
+            settop5List(top5);
             setXvalues(xValues);
             setYvalues(yValues);
           }
@@ -135,16 +140,18 @@ export default function Summary() {
   try {
   } catch (error) {}
 
-  function getPastDates(mainData = null, currentDate = moment().toDate()) {
+  function getPastDates(mainData = null) {
     var dateArray = new Array();
 
     const list = mainData && Object.keys(mainData);
-
+    const currentDate = moment(
+      moment().format('MM-DD-YYYY'),
+      'MM-DD-YYYY',
+    ).toDate();
     while (list.length > 0) {
       const date = list.shift();
-      // console.log("======>>>>>>", moment(date, 'MM-DD-YYYY').toDate() , moment().toDate() );
 
-      if (moment(date, 'MM-DD-YYYY HH:mm').toDate() < currentDate)
+      if (moment(date, 'MM-DD-YYYY').toDate() <= currentDate)
         dateArray.push(date);
     }
     return dateArray;
@@ -158,16 +165,44 @@ export default function Summary() {
     console.log('*******************', totalCount);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setTotalCountData(totalCount);
+
     setPieData(
       pieDataResponse.map(i => {
-        i.percentage = parseInt((i.count / totalCount) * 100);
+        i.percentage = ((i.count / totalCount) * 100).toFixed(2);
         return i;
       }),
     );
   }
   // console.log("-=-=-", pieData)
+  const getPartiCularDateData = date => {
+    let locationArrSet = new Set();
+    let locData = {};
+    mainData &&
+      Object.keys(mainData)?.map(dateKey => {
+        if (dateKey.includes(date) > 0) {
+          mainData?.[dateKey] &&
+            Object.keys(mainData?.[dateKey])?.map(locKey => {
+              locationArrSet.add(locKey);
+              locData[locKey] = {...locData?.[locKey]};
+              mainData?.[dateKey]?.[locKey] &&
+                Object.keys(mainData?.[dateKey]?.[locKey])?.map(catKey => {
+                  locData[locKey][catKey] =
+                    (locData?.[locKey]?.[catKey] ?? 0) +
+                    +mainData?.[dateKey]?.[locKey]?.[catKey];
+                });
+            });
+        }
+      });
 
-  const locationData = mainData?.[date]?.[location];
+    setAvailableLocationsData({...locData});
+    setLocationList([...locationArrSet]);
+    setOpenDatePicker(false);
+    setDate(date);
+    setLocation('');
+    setTotalCountData(0);
+    setPieData([]);
+  };
+
   if (loader)
     return (
       <>
@@ -199,6 +234,8 @@ export default function Summary() {
       </>
     );
 
+  const locationData = availableLocationsData?.[location];
+
   return (
     <SafeAreaView style={styles.parentView}>
       <KeyboardAwareScrollView enableOnAndroid>
@@ -216,8 +253,6 @@ export default function Summary() {
           <View style={{flex: 1}}>
             <TouchableOpacity
               onPress={() => {
-                const dList = getPastDates(mainData);
-                setItems([...dList]);
                 setOpenDatePicker(true);
               }}
               style={{
@@ -229,11 +264,11 @@ export default function Summary() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'row',
-                borderRadius:8
+                borderRadius: 8,
               }}>
               <Text
                 style={{fontSize: 15, color: '#dfd1b8', alignSelf: 'center'}}>
-                {!!date ? date : 'Select Date'}
+                {!!date ? getDate(date) : 'Select Date'}
               </Text>
               <Image
                 source={require('../../down-arrow.png')}
@@ -250,9 +285,6 @@ export default function Summary() {
               <>
                 <TouchableOpacity
                   onPress={() => {
-                    const lList =
-                      mainData?.[date] && Object.keys(mainData?.[date]);
-                    setItems([...lList]);
                     setOpenLocationPicker(true);
                   }}
                   style={{
@@ -263,7 +295,7 @@ export default function Summary() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexDirection: 'row',
-                    borderRadius:8
+                    borderRadius: 8,
                   }}>
                   <Text
                     style={{
@@ -291,7 +323,7 @@ export default function Summary() {
                       if (!location)
                         return Alert.alert('Please select date and location');
 
-                      const locationData = mainData?.[date]?.[location];
+                      const locationData = availableLocationsData?.[location];
 
                       let res = [];
                       locationData &&
@@ -379,7 +411,7 @@ export default function Summary() {
                     width: '100%',
                     position: 'absolute',
                     transform: [{scale: 0.6}],
-                    right: -120,
+                    right: -107,
                     top: 100,
                   }}>
                   {pieData.map((i, index) => {
@@ -434,7 +466,7 @@ export default function Summary() {
                     Object.keys(locationData)?.map(item => {
                       const isLast = item == 'totalCount';
                       return (
-                        <>
+                        <View key={item}>
                           <View style={styles.row}>
                             <Text
                               style={[styles.cell, isLast && styles.heading]}>
@@ -447,7 +479,7 @@ export default function Summary() {
                             </Text>
                           </View>
                           <View style={styles.hBorder} />
-                        </>
+                        </View>
                       );
                     })}
                 </View>
@@ -480,14 +512,11 @@ export default function Summary() {
                 </View>
                 <View style={styles.table}>
                   <View style={[styles.row, {backgroundColor: '#dfd1b8'}]}>
-                    <Text style={[styles.cell, styles.heading]}>Date</Text>
-                    <View style={styles.border} />
-
                     <Text style={[styles.cell, styles.heading]}>Location</Text>
                     <View style={styles.border} />
 
-                    <Text style={[styles.cell, styles.heading]}>
-                      Total Quantity
+                    <Text style={[styles.cell, styles.heading, {flex: 0.6}]}>
+                      Total Qty
                     </Text>
                   </View>
                   <View style={styles.hBorder} />
@@ -496,11 +525,15 @@ export default function Summary() {
                     return (
                       <>
                         <View style={styles.row}>
-                          <Text style={styles.cell}>{item?.date}</Text>
+                          {/* <Text style={styles.cell}>{getDate(item?.date)}</Text>
                           <View style={styles.border} />
+                          <Text style={[styles.cell,{flex:0.6}]}>{getStartTime(item?.date)}</Text>
+                          <View style={styles.border} /> */}
                           <Text style={[styles.cell]}>{item.location}</Text>
                           <View style={styles.border} />
-                          <Text style={styles.cell}>{item.totalCount}</Text>
+                          <Text style={[styles.cell, {flex: 0.6}]}>
+                            {item.totalCount}
+                          </Text>
                         </View>
                         <View style={styles.hBorder} />
                       </>
@@ -566,7 +599,7 @@ export default function Summary() {
                   Select Date
                 </Text>
 
-                {items.length == 0 && (
+                {dateList.length == 0 && (
                   <>
                     <View
                       style={{
@@ -584,24 +617,21 @@ export default function Summary() {
                         alignSelf: 'center',
                         fontWeight: 'normal',
                       }}>
-                      Sorry, No location found
+                      Sorry, No dates found
                     </Text>
                   </>
                 )}
 
                 <ScrollView
+                  indicatorStyle="black"
                   style={{width: '100%'}}
-                  showsVerticalScrollIndicator={false}>
-                  {items.map(i => {
+                  showsVerticalScrollIndicator={true}>
+                  {dateList.map(i => {
                     return (
                       <TouchableOpacity
                         key={i}
                         onPress={() => {
-                          setOpenDatePicker(false);
-                          setDate(i);
-                          setLocation('');
-                          setTotalCountData(0);
-                          setPieData([]);
+                          getPartiCularDateData(i);
                         }}
                         style={{flex: 1}}>
                         <View
@@ -665,11 +695,33 @@ export default function Summary() {
                   }}>
                   Select location
                 </Text>
-
+                {locationList.length == 0 && (
+                  <>
+                    <View
+                      style={{
+                        height: 1,
+                        marginTop: 10,
+                        width: '100%',
+                        backgroundColor: '#09172d',
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        marginVertical: 50,
+                        color: '#09172d',
+                        alignSelf: 'center',
+                        fontWeight: 'normal',
+                      }}>
+                      Sorry, No locations found
+                    </Text>
+                  </>
+                )}
                 <ScrollView
                   style={{width: '100%'}}
-                  showsVerticalScrollIndicator={false}>
-                  {items.map(i => {
+                  indicatorStyle="black"
+                  showsVerticalScrollIndicator={true}>
+                  {locationList.map(i => {
                     return (
                       <TouchableOpacity
                         key={i}

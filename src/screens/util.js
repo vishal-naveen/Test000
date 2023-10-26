@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const Colors = {};
 Colors.names = {
     aqua: "#00ffff",
@@ -64,3 +66,33 @@ Colors.random = function() {
 //     .then(() => console.log('Data set. 1'));
 
 export default Colors
+
+export const getDate = (dateTime)=>{
+    const date = dateTime.split(' ')?.[0] ?? ""
+    return date
+}
+
+export const getStartTime = (dateTime)=>{
+    const date = dateTime.split(' ')?.[1] ?? ""
+    return date
+}
+
+export const getEndTime = (dateTime)=>{
+    const date = dateTime.split(' ')?.[2] ?? ""
+    return date
+}
+
+export const getSortedDateList = (arr)=>{
+    arr =
+    arr?.length > 0
+      ? arr.sort(function (a, b) {
+          var keyA = moment(a, 'MM-DD-YYYY').toDate(),
+            keyB = moment(b, 'MM-DD-YYYY').toDate();
+          // Compare the 2 dates
+          if (keyA < keyB) return -1;
+          if (keyA > keyB) return 1;
+          return 0;
+        })
+      : [];  
+        return arr
+}

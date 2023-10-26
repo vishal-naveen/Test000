@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import TInput from '../components/TInput';
 import AuthHeader from '../components/AuthHeader';
 
-export default function verifyPhone() {
+export default function VerifyPhone() {
     return (
       <KeyboardAvoidingView style={{backgroundColor:'#09172d'}}>
         <View style={{alignItems:'center', justifyContent:'center', height:"100%"}}>

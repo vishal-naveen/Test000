@@ -14,6 +14,7 @@ import {
   View
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Colors, {getDate, getStartTime,getEndTime, getSortedDateList} from './util';
 
 const database = firebase
   .app()
@@ -37,25 +38,58 @@ export default function SearchScreen() {
           let dataBaseData = snapshot.val();
           if (dataBaseData) {
             let futureDates = getFutureDates(dataBaseData);
-            setItems(futureDates);
+            const mySet1 = new Set();
+            futureDates?.map(item => {
+              // console.log(dataBaseData?.[item]);
+              mySet1.add(getDate(item));
+            });
+
+            setItems(getSortedDateList([...mySet1]));
+
+            // setItems(futureDates);
             setMainData({...dataBaseData});
           }
         });
     } catch (error) {}
   }, []);
 
-  function getFutureDates(mainData = null, currentDate = moment().toDate()) {
+  function getFutureDates(mainData = null) {
     var dateArray = new Array();
 
     const list = mainData && Object.keys(mainData);
 
+    const  currentDate = moment(moment().format('MM-DD-YYYY'), 'MM-DD-YYYY').toDate()
     while (list.length > 0) {
       const date = list.shift();
-      if (moment(date, 'MM-DD-YYYY').toDate() > currentDate)
+      if (moment(date, 'MM-DD-YYYY').toDate() >= currentDate)
         dateArray.push(date);
     }
     return dateArray;
   }
+
+    // console.log("-=-=-", pieData)
+    const getPartiCularDateData = date => {
+      let arr = [];
+      mainData &&
+        Object.keys(mainData)?.map(dateKey => {
+          console.log("==>>",dateKey,date,dateKey.includes(date));
+          if (dateKey.includes(date) > 0) {
+            mainData?.[dateKey] &&
+              Object.keys(mainData?.[dateKey])?.map(locKey => {
+                arr.push({
+                  date: dateKey,
+                  location: locKey,
+                });
+              });
+          }
+        });
+  
+
+
+        setOpenDatePicker(false);
+        setDate(date);
+        setLocationList(arr);
+    };
 
   return (
     <SafeAreaView style={styles.parentView}>
@@ -108,6 +142,10 @@ export default function SearchScreen() {
               <View style={[styles.row, {backgroundColor: '#dfd1b8'}]}>
                 <Text style={[styles.cell, styles.heading]}>Date</Text>
                 <View style={styles.border} />
+                <Text style={[styles.cell, styles.heading,{flex:0.6}]}>Start Time</Text>
+                <View style={styles.border} />
+                <Text style={[styles.cell, styles.heading,{flex:0.6}]}>End Time</Text>
+                <View style={styles.border} />
                 <Text style={[styles.cell, styles.heading]}>Location</Text>
               </View>
               <View style={styles.hBorder} />
@@ -116,7 +154,11 @@ export default function SearchScreen() {
                 return (
                   <View key={index+""}>
                     <View style={styles.row}>
-                      <Text style={styles.cell}>{item?.date}</Text>
+                      <Text style={styles.cell}>{getDate(item?.date)}</Text>
+                      <View style={styles.border} />
+                      <Text style={[styles.cell,,{flex:0.6}]}>{getStartTime(item?.date)}</Text>
+                      <View style={styles.border} />
+                      <Text style={[styles.cell,,{flex:0.6}]}>{getEndTime(item?.date)}</Text>
                       <View style={styles.border} />
                       <Text style={[styles.cell]}>{item.location}</Text>
                     </View>
@@ -195,18 +237,7 @@ export default function SearchScreen() {
                       <TouchableOpacity
                         key={i}
                         onPress={() => {
-                          setOpenDatePicker(false);
-                          setDate(i);
-                          let arr = [];
-                          mainData?.[i] &&
-                            Object.keys(mainData?.[i])?.map(locItem => {
-                              arr.push({
-                                date: i,
-                                location: locItem,
-                              });
-                            });
-
-                          setLocationList(arr);
+                       getPartiCularDateData(i)
                         }}
                         style={{flex: 1}}>
                         <View

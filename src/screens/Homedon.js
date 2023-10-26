@@ -11,6 +11,7 @@ import {
 import {firebase} from '@react-native-firebase/database';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
+import Colors, {getDate, getStartTime,getEndTime, getSortedDateList} from './util';
 
 const database = firebase
   .app()
@@ -34,7 +35,7 @@ export default function Homedon({}) {
 
             let arr = [];
             futureDates?.length > 0 &&
-              futureDates?.splice(0, 5)?.map(item => {
+              futureDates?.map(item => {
                 dataBaseData?.[item] &&
                   Object.keys(dataBaseData?.[item])?.map(locItem => {
                     arr.push({
@@ -62,13 +63,17 @@ export default function Homedon({}) {
     } catch (error) {}
   }, []);
 
-  function getFutureDates(mainData = null, currentDate = moment().toDate()) {
+  function getFutureDates(mainData = null) {
     var dateArray = new Array();
     const list = mainData && Object.keys(mainData);
 
+    const currentDate = moment(
+      moment().format('MM-DD-YYYY'),
+      'MM-DD-YYYY',
+    ).toDate();
     while (list.length > 0) {
       const date = list.shift();
-      if (moment(date, 'MM-DD-YYYY').toDate() > currentDate)
+      if (moment(date, 'MM-DD-YYYY').toDate() >= currentDate)
         dateArray.push(date);
     }
     return dateArray;
@@ -112,9 +117,7 @@ export default function Homedon({}) {
         </View>
         <View style={{marginTop: 30, width: '100%'}}>
           <View style={{alignItems: 'center'}}>
-            <Text
-              style={{fontSize: 27, color: '#dfd1b8'}}
-              onPress={()=>{}}>
+            <Text style={{fontSize: 27, color: '#dfd1b8'}} onPress={() => {}}>
               How you can help
             </Text>
             <Text style={{fontSize: 17, color: '#dfd1b8'}}>
@@ -149,20 +152,36 @@ export default function Homedon({}) {
             <View style={[styles.row, {backgroundColor: '#dfd1b8'}]}>
               <Text style={[styles.cell, styles.heading]}>Date</Text>
               <View style={styles.border} />
+              <Text style={[styles.cell, styles.heading, {flex: 0.6}]}>
+                Start Time
+              </Text>
+              <View style={styles.border} />
+              <Text style={[styles.cell, styles.heading, {flex: 0.6}]}>
+                End Time
+              </Text>
+              <View style={styles.border} />
               <Text style={[styles.cell, styles.heading]}>Location</Text>
             </View>
             <View style={styles.hBorder} />
 
-            {locationList?.map(item => {
+            {locationList?.map((item, index) => {
               return (
-                <>
+                <View key={index + ''}>
                   <View style={styles.row}>
-                    <Text style={styles.cell}>{item?.date}</Text>
+                    <Text style={styles.cell}>{getDate(item?.date)}</Text>
+                    <View style={styles.border} />
+                    <Text style={[styles.cell, , {flex: 0.6}]}>
+                      {getStartTime(item?.date)}
+                    </Text>
+                    <View style={styles.border} />
+                    <Text style={[styles.cell, , {flex: 0.6}]}>
+                      {getEndTime(item?.date)}
+                    </Text>
                     <View style={styles.border} />
                     <Text style={[styles.cell]}>{item.location}</Text>
                   </View>
                   <View style={styles.hBorder} />
-                </>
+                </View>
               );
             })}
           </View>
